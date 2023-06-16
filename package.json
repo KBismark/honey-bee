@@ -1,0 +1,44 @@
+{
+  "name": "honey-bee",
+  "version": "0.0.1",
+  "description": "A declarative and reactive library for creating both static pages, multi-page and single page applications.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*","i4w*.map.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node join-ts.js && tsc && node parse.js",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "honeybee",
+    "honey-bee",
+    "reactivity",
+    "web-app",
+    "app",
+    "javascript",
+    "ssr",
+    "web",
+    "import-for-web"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KBismark/honey-bee.git"
+  },
+  "author": "Bismark Yamoah",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "prettier": "^2.8.8",
+    "terser": "^5.18.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^5.1.3"
+  }
+}

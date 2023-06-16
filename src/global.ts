@@ -1,0 +1,92 @@
+let B: any = undefined;
+const renderingComponent: { id?: number; dynIndex?: number; chain: any } = {
+  id: undefined,
+  dynIndex: undefined,
+  chain: new Map(),
+};
+const componentsTrashBin = new Set();
+const ListsTrashBin = new Set();
+const CreatedComponents = new Map();
+const Blocks = new Map();
+const MountBucket = new Map();
+const TemplateBucket = new Map();
+const standAloneUpdates = new Map();
+const dynamicNodeUpdates = new Map();
+const listUpdates = new Map();
+let updates_initiated = false;
+let updating = false;
+const internal = Symbol();
+const internal_ins = Symbol();
+const _external = Symbol();
+const ext_state = Symbol();
+const independent = Symbol();
+const Namings: { [k: string]: () => BeeComponentInstanceObject } = {};
+let dinstinctComponents = 0;
+let componentsID = 0;
+let listCount = 0;
+let global_template: any = undefined;
+const STATUS = {
+  alive: 1,
+  hibernatedPartially: 2,
+  hibernatedFully: 3,
+  dead: 4,
+};
+const NODETYPES = {
+  text: 1,
+  component: 2,
+  list: 3,
+};
+const PAGES: { [k: string]: number } = {};
+const page_tracking: {
+  isFirstRender: boolean;
+  ispopstate: any;
+  newPage: any;
+  renderNewPage: any;
+  newPageName: string;
+  clientRendered: boolean;
+  currentPage: null | number;
+  currentPageName: string;
+  onpageExit: {};
+  onNewPage: {};
+  visitedPages: {};
+} = {
+  isFirstRender: false,
+  ispopstate: undefined,
+  newPage: undefined,
+  renderNewPage: undefined,
+  newPageName: '',
+  clientRendered: false,
+  currentPage: null,
+  currentPageName: window.location.origin,
+  onpageExit: {},
+  onNewPage: {},
+  visitedPages: {},
+};
+let pagelock: symbol | {} = internal;
+const pageopen = {};
+window.addEventListener(
+  'popstate',
+  function PagePopState(e) {
+    const pathname = window.location.pathname;
+    if (PAGES[pathname]) {
+      if (page_tracking.currentPageName != pathname) {
+        B.UI.renderPage(pathname, undefined, internal);
+      }
+    } else {
+      history.replaceState(e.state, '', window.location.origin + page_tracking.currentPageName);
+    }
+  },
+  false,
+);
+
+type BeeComponentInstanceObject = {
+  [k: symbol]: { fnId: number; id: number; out?: BeeElement };
+  readonly isComponent: true;
+};
+interface BeeElement {
+  [k: symbol]: {
+    node: HTMLElement | any;
+    [k: string]: any;
+  };
+  // instance(initArgs: any): BeeComponentInstanceObject
+}
