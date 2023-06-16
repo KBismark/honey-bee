@@ -70,7 +70,7 @@ window.addEventListener(
     const pathname = window.location.pathname;
     if (PAGES[pathname]) {
       if (page_tracking.currentPageName != pathname) {
-        B.UI.renderPage(pathname, undefined, internal);
+        B.UI.renderNewPage(pathname, undefined, internal);
       }
     } else {
       history.replaceState(e.state, '', window.location.origin + page_tracking.currentPageName);
