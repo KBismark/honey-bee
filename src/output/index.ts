@@ -1,4 +1,9 @@
-let B: any = undefined;
+/**
+ * The exposed HoneyBee object shall be stored in this variable as well.
+ * Use this variable to access the object internally.    
+ * **This variable is undefined outside a function scope hence, must be accessed only in a function scope**
+ */
+let B: Bee;
 const renderingComponent: { id?: number; dynIndex?: number; chain: any } = {
   id: undefined,
   dynIndex: undefined,
@@ -70,7 +75,7 @@ window.addEventListener(
     const pathname = window.location.pathname;
     if (PAGES[pathname]) {
       if (page_tracking.currentPageName != pathname) {
-        B.UI.renderPage(pathname, undefined, internal);
+        B.UI.renderNewPage(pathname, (undefined as any), internal);
       }
     } else {
       history.replaceState(e.state, '', window.location.origin + page_tracking.currentPageName);
@@ -156,30 +161,35 @@ class Bee {
   UI: UI;
   isSelectiveRendering: boolean;
   selector: any;
-  externalData: { [k: string]: { data: any } };
+  externalData: { data: { [k: string]: { data: any } } };
   _imex: any;
   constructor() {
     this.UI = new UI();
     this.isSelectiveRendering = false;
     this.selector = null;
-    this.externalData = {};
+    let _ext = {data:{}};
+    if ((window as any).HoneyBee) {
+      _ext = (window as any).HoneyBee.externalData;
+    }
+    this.externalData = _ext;
   }
+  isSSR: boolean = (window as any).HoneyBee ? (window as any).HoneyBee.isSSR : false;
   /**
-   * Used for selecting independent components that needs to be hydrated after SSR.
+   * Used for selecting independent components that needs to be hydrated after SSR.    
    * **----Internal method----**
    */
   select(node: any, eventName: any) {
     const independentNode = getIndependentNode(node);
     const path = independentNode.getAttribute('bee-path'),
       compName = independentNode.getAttribute('bee-N');
-    this.selector = {
+    B.selector = {
       node: independentNode,
       iname: independentNode.getAttribute('bee-I'),
     };
-    const clientRenderdNode = this.UI.render(Namings[path + compName](/**No Initial Args */) /**No Args */);
+    const clientRenderdNode = B.UI.render(Namings[path + compName](/**No Initial Args */) /**No Args */);
     independentNode.replaceWith(clientRenderdNode[internal].node);
-    this.isSelectiveRendering = false;
-    this.selector = null;
+    B.isSelectiveRendering = false;
+    B.selector = null;
   }
   /** */
   create(
@@ -197,7 +207,7 @@ class Bee {
     if (compClass.isIndependent) {
       _internal_.independent = true;
     }
-    if ((B as Bee).isSelectiveRendering && _internal_.independent) {
+    if (B.isSelectiveRendering && _internal_.independent) {
       return independent;
     }
     const node = compClass.getTemplate();
@@ -238,7 +248,9 @@ if (typeof (window as any).IMEX != 'undefined') {
       isShimmed: true
   };
 }
-
+if ((window as any).HoneyBee) {
+  (window as any).HoneyBee.select = Bee.prototype.select;
+}
 /**
  * Traverses from a child node to the nearest parent node which is marked as independent head node
  * on the server.
@@ -249,7 +261,6 @@ if (typeof (window as any).IMEX != 'undefined') {
 function getIndependentNode(node: any): any {
   return node.getAttribute('bee-I') ? node : getIndependentNode(node.parentNode);
 }
-
 
 function keepStateIfDestroyed(this: { [k: symbol | number | string]: any }, bool: boolean) {
   const _internal_ = this[internal];
@@ -1810,12 +1821,17 @@ class UI {
   getPublicData(ins: BeeComponentInstanceObject): PossibleValues {
     return Blocks.get(ins[internal_ins].id).public || {};
   }
+  getSourceData(url: string) {
+    const data = B.externalData.data[url];
+    if (!data) return undefined;
+    return data.data;
+  }
   /**
    * Set data to url end points when they become available.
    * @param info Data source object
    *
    * @example
-   * const { UI, externalData } = HoneyBee;
+   * const { UI } = HoneyBee;
    * const url = "my_url";
    *
    * const myComponent = UI.CreateComponent('component_name',function({id,name}){
@@ -1823,7 +1839,7 @@ class UI {
    *   this.onCreation = async function({id}){
    *     this.state = {data:null};
    *     let full_url = `${url}?id=${id}`;
-   *     let value = externalData[full_url];
+   *     let value = UI.getSourceData(full_url);
    *     let data;
    *     if(!value){
    *       let response = await fetch(full_url);
@@ -1831,7 +1847,7 @@ class UI {
    *     }else{
    *       data = value.data;
    *     }
-   *     UI.setDataSource({url:full_url,data:data});
+   *     UI.setSourceData({url:full_url,data:data});
    *     this.state.data = data;
    *   }
    *
@@ -1839,8 +1855,8 @@ class UI {
    *
    * })
    */
-  setDataSource(info: { url: string; data: any }) {
-    B.externalData[info.url] = { data: info.data };
+  setSourceData(info: { url: string; data: any }) {
+    B.externalData.data[info.url] = { data: info.data };
   }
 }
 function ComponentMethod(this: { fnId: number }, args: any) {
@@ -1884,7 +1900,6 @@ type BeeComponentInstance = {
 type PossibleValues = { [k: string | symbol | number]: any };
 
 const HoneyBee = B = new Bee();
-
 // declare global {
 //   interface Window {
 //     IMEX: { [k: string]: Function | string|boolean };
@@ -1893,16 +1908,4 @@ const HoneyBee = B = new Bee();
 //   const HoneyBee: Bee;
 // }
 // export {};
-
-if ((window as any).IMEX.isShimmed) {
-    Object.defineProperty(window, 'HoneyBee', {
-        value: HoneyBee,
-        configurable: false,
-        enumerable: true,
-        writable: false,
-    });
-} else {
-    (window as any).IMEX.pathname = '/modules/honey-bee@1.0.0';
-    (window as any).IMEX.export = HoneyBee;
-}
 export default HoneyBee;
