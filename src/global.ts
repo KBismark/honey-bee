@@ -1,4 +1,9 @@
-let B: any = undefined;
+/**
+ * The exposed HoneyBee object shall be stored in this variable as well.
+ * Use this variable to access the object internally.    
+ * **This variable is undefined outside a function scope hence, must be accessed only in a function scope**
+ */
+let B: Bee;
 const renderingComponent: { id?: number; dynIndex?: number; chain: any } = {
   id: undefined,
   dynIndex: undefined,
@@ -70,7 +75,7 @@ window.addEventListener(
     const pathname = window.location.pathname;
     if (PAGES[pathname]) {
       if (page_tracking.currentPageName != pathname) {
-        B.UI.renderNewPage(pathname, undefined, internal);
+        B.UI.renderNewPage(pathname, (undefined as any), internal);
       }
     } else {
       history.replaceState(e.state, '', window.location.origin + page_tracking.currentPageName);
@@ -88,5 +93,4 @@ interface BeeElement {
     node: HTMLElement | any;
     [k: string]: any;
   };
-  // instance(initArgs: any): BeeComponentInstanceObject
 }
