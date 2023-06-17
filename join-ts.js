@@ -8,6 +8,10 @@ index = sourceFiles.indexOf('global.ts');
 sourceFiles = [...sourceFiles.slice(0, index), ...sourceFiles.slice(index + 1)];
 index = sourceFiles.indexOf('finally.ts');
 sourceFiles = [...sourceFiles.slice(0, index), ...sourceFiles.slice(index + 1)];
+try {
+    // 
+    fs.mkdirSync(path.join(__dirname, "/src/output"));
+} catch (error) {}
 const outputFile = path.join(__dirname, "/src/output/index.ts");
 fs.writeFileSync(outputFile, fs.readFileSync(path.join(sourceFolder, '/global.ts')));
 for (let i = 0; i < sourceFiles.length; i++){
