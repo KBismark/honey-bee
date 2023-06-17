@@ -2,30 +2,35 @@ class Bee {
   UI: UI;
   isSelectiveRendering: boolean;
   selector: any;
-  externalData: { [k: string]: { data: any } };
+  externalData: { data: { [k: string]: { data: any } } };
   _imex: any;
   constructor() {
     this.UI = new UI();
     this.isSelectiveRendering = false;
     this.selector = null;
-    this.externalData = {};
+    let _ext = {data:{}};
+    if ((window as any).HoneyBee) {
+      _ext = (window as any).HoneyBee.externalData;
+    }
+    this.externalData = _ext;
   }
+  isSSR: boolean = (window as any).HoneyBee ? (window as any).HoneyBee.isSSR : false;
   /**
-   * Used for selecting independent components that needs to be hydrated after SSR.
+   * Used for selecting independent components that needs to be hydrated after SSR.    
    * **----Internal method----**
    */
   select(node: any, eventName: any) {
     const independentNode = getIndependentNode(node);
     const path = independentNode.getAttribute('bee-path'),
       compName = independentNode.getAttribute('bee-N');
-    this.selector = {
+    B.selector = {
       node: independentNode,
       iname: independentNode.getAttribute('bee-I'),
     };
-    const clientRenderdNode = this.UI.render(Namings[path + compName](/**No Initial Args */) /**No Args */);
+    const clientRenderdNode = B.UI.render(Namings[path + compName](/**No Initial Args */) /**No Args */);
     independentNode.replaceWith(clientRenderdNode[internal].node);
-    this.isSelectiveRendering = false;
-    this.selector = null;
+    B.isSelectiveRendering = false;
+    B.selector = null;
   }
   /** */
   create(
@@ -43,7 +48,7 @@ class Bee {
     if (compClass.isIndependent) {
       _internal_.independent = true;
     }
-    if ((B as Bee).isSelectiveRendering && _internal_.independent) {
+    if (B.isSelectiveRendering && _internal_.independent) {
       return independent;
     }
     const node = compClass.getTemplate();
@@ -56,7 +61,7 @@ class Bee {
     run(comp);
     const kNdN = Setter.call(comp, _internal_.Args, node, eventHandler, id, dependencies, true);
     _internal_.keyed = kNdN[0];
-    _internal_.init_dyn = dynMethod(node); // kNdN[1];
+    _internal_.init_dyn = dynMethod(node); 
     const attrDeps = (_internal_.attrDeps = new Map());
     const state = comp.state;
     let key, fn;
@@ -84,7 +89,9 @@ if (typeof (window as any).IMEX != 'undefined') {
       isShimmed: true
   };
 }
-
+if ((window as any).HoneyBee) {
+  (window as any).HoneyBee.select = Bee.prototype.select;
+}
 /**
  * Traverses from a child node to the nearest parent node which is marked as independent head node
  * on the server.
