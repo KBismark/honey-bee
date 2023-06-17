@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const packageJSON = require('./package.json')
 // TODO: Babel for transformations to support old browsers.
-// const babel = require('@babel/core');
+ const babel = require('@babel/core');
 const terser = require('terser');
 const sourceFile = path.join(__dirname, '/lib/index.js');
 const outputFile = path.join(__dirname, '/lib/index.js.min.js');
@@ -35,12 +35,29 @@ if (window.IMEX.isShimmed) {
 // Update source code to include the exports object;
 let sourceCode = `!function(exports){\n${fs.readFileSync(sourceFile, 'utf8')}\n${exposeAPI}
 \n}(typeof exports!='undefined'?exports:{});`;
+sourceCode = babel.transformSync(sourceCode, {
+    "comments": false,
+    // "presets": [
+    //     [
+    //         "@babel/preset-env",
+    //         {
+    //             targets: {
+    //                 ie: '8',
+    //                 chrome: '67',
+    //                 safari:'10'
+    //             },
+    //             useBuiltIns: 'usage',
+    //             corejs: '3'
+    //         }
+    //     ]
+    // ]
+}).code;
 fs.writeFileSync(sourceFile, sourceCode);
 
 
 // Provide a workarounds for usage with the `bee-server` module
 fs.writeFileSync(sourceFile + '.bundle.js', sourceCode);
-fs.writeFileSync(sourceFile + '.server.js', `module.exports = (HoneyBee)=>{const IMEX = HoneyBee._imex;
+fs.writeFileSync(sourceFile + '.server.js', `module.exports = (HoneyBee)=>{const IMEX = HoneyBee.UI._imex;
     IMEX.pathname = '${pathname}';
     IMEX.onload = function(){return HoneyBee};
 \n}`);
