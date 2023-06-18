@@ -75,17 +75,17 @@ class Bee {
   }
 }
 /**
- * If IMEX is not included, set a shim
+ * If I4W is not included, set a shim
  */
-if (typeof (window as any).IMEX != 'undefined') {
-  Bee.prototype._imex = (window as any).IMEX;
+if (typeof (window as any).I4W != 'undefined') {
+  Bee.prototype._imex = (window as any).I4W;
 } else {
-    (window as any).IMEX = Bee.prototype._imex = {
+    (window as any).I4W = Bee.prototype._imex = {
     pathname: '',
     getPath() {
       return this.pathname;
     },
-    // This value indicates the global IMEX objext is not original.
+    // This value indicates the global I4W objext is not original.
       isShimmed: true
   };
 }

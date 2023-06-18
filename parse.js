@@ -20,7 +20,7 @@ module.exports =() => (
 })
 `
 const exposeAPI = `
-if (window.IMEX.isShimmed) {
+if (window.I4W.isShimmed) {
     Object.defineProperty(window, 'HoneyBee', {
         value: HoneyBee,
         configurable: false,
@@ -28,8 +28,8 @@ if (window.IMEX.isShimmed) {
         writable: false,
     });
 } else {
-    window.IMEX.pathname = '${pathname}';
-    window.IMEX.export = HoneyBee;
+    window.I4W.pathname = '${pathname}';
+    window.I4W.export = HoneyBee;
 }
 `
 // Update source code to include the exports object;
@@ -57,9 +57,9 @@ fs.writeFileSync(sourceFile, sourceCode);
 
 // Provide a workarounds for usage with the `bee-server` module
 fs.writeFileSync(sourceFile + '.bundle.js', sourceCode);
-fs.writeFileSync(sourceFile + '.server.js', `module.exports = (HoneyBee)=>{const IMEX = HoneyBee.UI._imex;
-    IMEX.pathname = '${pathname}';
-    IMEX.onload = function(){return HoneyBee};
+fs.writeFileSync(sourceFile + '.server.js', `module.exports = (HoneyBee)=>{const I4W = HoneyBee.UI._imex;
+    I4W.pathname = '${pathname}';
+    I4W.onload = function(){return HoneyBee};
 \n}`);
 
 // Update import-for-web mappings
