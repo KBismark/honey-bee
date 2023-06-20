@@ -35,6 +35,7 @@ class ComponentClass {
   deps: any = undefined;
   isIndependent: boolean = false;
   dynMethod: any = undefined;
+  Name?: string;
 
   setup(htmlMethod: () => string, setter: any, dn: any, dependencies: any, dynMethod: Function, proto: any) {
     this.dn = dn;

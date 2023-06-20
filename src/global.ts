@@ -42,6 +42,7 @@ const NODETYPES = {
   list: 3,
 };
 const PAGES: { [k: string]: number } = {};
+const PAGES_TYPES: { [k: number]: number } = {};
 const page_tracking: {
   isFirstRender: boolean;
   ispopstate: any;
@@ -68,6 +69,7 @@ const page_tracking: {
   visitedPages: {},
 };
 let pagelock: symbol | {} = internal;
+let firstPageCreated = false;
 const pageopen = {};
 window.addEventListener(
   'popstate',

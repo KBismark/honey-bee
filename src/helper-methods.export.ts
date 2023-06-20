@@ -165,8 +165,9 @@ const observeDependency = function observeDependency(
   }
 };
 function _newpageRendered() {
-  const newPage = page_tracking.renderNewPage;
-  if (!newPage) return false;
+  let renderedNewPage = false;
+  let newPage = page_tracking.renderNewPage;
+  if (!newPage) return renderedNewPage;
   const currentPage = page_tracking.currentPage;
   const currentPageName = page_tracking.currentPageName;
   const newPageName = page_tracking.newPageName;
@@ -182,7 +183,17 @@ function _newpageRendered() {
       window.scrollTo({ top: 0 });
     }
     if (page_tracking.clientRendered) {
-      const newPageInstance = Blocks.get(newPage)[internal].ins;
+      const newpage_block = Blocks.get(newPage);
+      let newPageInstance: BeeComponentInstanceObject;
+      if (!newpage_block) {
+        // The new page's instance object was totally destroyed.
+        // Create a new instance of the component used in rendering this page earlier on.
+        const compClass = CreatedComponents.get(PAGES_TYPES[newPage]);
+        newPageInstance = Namings[compClass.Name]();
+        newPage =  PAGES[newPageName] = newPageInstance[internal_ins].id;
+      } else {
+        newPageInstance = newpage_block[internal].ins;
+      }
       const block = Blocks.get(currentPage);
       const node = block[internal].outerValue[internal].node;
       const replacer = document.createTextNode('');
@@ -192,6 +203,7 @@ function _newpageRendered() {
       page_tracking.currentPageName = newPageName;
       page_tracking.currentPage = newPage;
     } else {
+      page_tracking.clientRendered = true;
       const newPageInstance = Blocks.get(newPage)[internal].ins;
       const block = Blocks.get(currentPage);
       let node = block[internal].outerValue[internal].node;
@@ -205,15 +217,13 @@ function _newpageRendered() {
       page_tracking.currentPageName = newPageName;
       page_tracking.currentPage = newPage;
     }
-    return true;
-  }
-  if (page_tracking.isFirstRender) {
-    window.scrollTo({ top: 0 });
+    history.pushState(null, '', window.location.origin + newPageName);
+    renderedNewPage = true;
   }
   page_tracking.newPageName = '';
   page_tracking.isFirstRender = false;
   page_tracking.ispopstate = page_tracking.ispopstate = page_tracking.renderNewPage = undefined;
-  return false;
+  return renderedNewPage;
 }
 
 function _listupdater(value: any) {
