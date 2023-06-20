@@ -16,7 +16,8 @@ class UI {
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
     f.instance = getComponentInstance.bind({ fnId: cm.id });
-    Namings[B._imex.getPath() + name] = f.instance;
+    name = cm.Name = B._imex.getPath() + name;
+    Namings[name] = f.instance;
     return f;
   }
   /**
@@ -45,16 +46,24 @@ class UI {
   }
   /**
    * Creates the first page.
-   * @param pagePath A pathname for the page.
-   * @param ins A component instance to render as page
+   * @param pagePath A pathname for the page.   
+   * 
+   * @param ins A component instance or a component to render as page. If a component instance is provided, 
+   * it must be hibernated by calling either `this.keepStateIfDestroyed()` or `this.keepEverythingIfDestroyed()`
+   * 
    *
    */
-  CreatePage(pagePath: string, ins: BeeComponentInstanceObject) {
-    if (pagelock == pageopen) {
+  CreatePage(pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance) {
+    if (!firstPageCreated && pagelock == pageopen) {
+      if (typeof ins == 'function') {
+        ins = ins.instance();
+      }
       const id = ins[internal_ins].id;
       page_tracking.currentPage = id;
       page_tracking.currentPageName = pagePath;
       PAGES[pagePath] = id;
+      PAGES_TYPES[id] = ins[internal_ins].fnId;
+      firstPageCreated = true;
       if (B.isSSR) {
         B.isSSR = false;
         // ins[internal_ins].out[internal].node = 8
@@ -186,9 +195,14 @@ class UI {
    *  when a popstate event is triggered.
    *
    */
-  renderNewPage(pagePath: string, ins: BeeComponentInstanceObject, popstate?: unknown) {
+  renderNewPage(pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance, popstate?: unknown) {
     if (!PAGES[pagePath]) {
-      PAGES[pagePath] = ins[internal_ins].id;
+      if (typeof ins == 'function') {
+        ins = ins.instance();
+      }
+      const id = ins[internal_ins].id;
+      PAGES[pagePath] = id;
+      PAGES_TYPES[id] = ins[internal_ins].fnId;
       page_tracking.isFirstRender = true;
     } else {
       page_tracking.isFirstRender = false;
