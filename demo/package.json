@@ -1,0 +1,15 @@
+{
+  "name": "honey-bee-demos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/modules/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node transpile.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "import-for-web": "^0.0.1"
+  }
+}
