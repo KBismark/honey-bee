@@ -180,6 +180,8 @@ function _newpageRendered() {
     }
   } else {
     if (page_tracking.isFirstRender) {
+      // If it is the first time rendering this page,
+      // show the top of the screen.
       window.scrollTo({ top: 0 });
     }
     if (page_tracking.clientRendered) {
@@ -188,17 +190,27 @@ function _newpageRendered() {
       if (!newpage_block) {
         // The new page's instance object was totally destroyed.
         // Create a new instance of the component used in rendering this page earlier on.
-        const compClass = CreatedComponents.get(PAGES_TYPES[newPage]);
+        const fnId = PAGES_TYPES[newPage];
+        const compClass = CreatedComponents.get(fnId);
         newPageInstance = Namings[compClass.Name]();
-        newPage =  PAGES[newPageName] = newPageInstance[internal_ins].id;
+        newPage = PAGES[newPageName] = newPageInstance[internal_ins].id;
+        PAGES_TYPES[newPage] = fnId;
       } else {
         newPageInstance = newpage_block[internal].ins;
       }
       const block = Blocks.get(currentPage);
-      const node = block[internal].outerValue[internal].node;
-      const replacer = document.createTextNode('');
-      node.replaceWith(replacer);
-      replacer.replaceWith(B.UI.render(newPageInstance)[internal].node);
+      const node:HTMLElement = block[internal].outerValue[internal].node;
+      const parentNode = node.parentNode;
+      const nextSibling:ChildNode|null = node.nextSibling;
+      const replacer:HTMLElement = B.UI.render(newPageInstance)[internal].node;
+      // Component was not re-used anywhere in new page
+      if (node.parentNode === parentNode) {
+        node.replaceWith(replacer);
+      }
+      // Component re-used somewhere in new page
+      else {
+        (parentNode as ParentNode).insertBefore(replacer, nextSibling);
+      }
       componentsTrashBin.add(currentPage);
       page_tracking.currentPageName = newPageName;
       page_tracking.currentPage = newPage;
@@ -210,9 +222,17 @@ function _newpageRendered() {
       if (!node) {
         node = block[internal].outerValue[internal].node = document.getElementById('page');
       }
-      const replacer = document.createTextNode('');
-      node.replaceWith(replacer);
-      replacer.replaceWith(B.UI.render(newPageInstance)[internal].node);
+      const parentNode:ParentNode|null = node.parentNode;
+      const nextSibling:ChildNode|null = node.nextSibling;
+      const replacer:HTMLElement = B.UI.render(newPageInstance)[internal].node;
+      // Component was not re-used anywhere in new page
+      if (node.parentNode === parentNode) {
+        node.replaceWith(replacer);
+      }
+      // Component re-used somewhere in new page
+      else {
+        (parentNode as ParentNode).insertBefore(replacer, nextSibling);
+      }
       componentsTrashBin.add(newPage);
       page_tracking.currentPageName = newPageName;
       page_tracking.currentPage = newPage;
@@ -245,12 +265,19 @@ function cleanUp() {
 function clearComponents(children: any, id: any) {
   let comp = Blocks.get(id);
   const _internal_ = comp[internal];
+  // `keepEverythingIfDestroyed()` was called.
+  // `this.onDestroyed` is not executed since component will not 
+  // be distroyed. Component is rather hibernated.
   if (_internal_.keepAll) {
     children = children || _internal_.childComponents;
     let tmp = _internal_.outerValue[internal];
     tmp.node.remove();
     triggerHibernateEvents(children, id);
-  } else {
+  }
+  // `keepEverythingIfDestroyed()` was not called
+  // We keep state object if `keepStateIfDestroyed()` was called. Else,
+  // we destoy everything related to the component
+  else {
     const onDestroyed = comp.onDestroyed;
     comp.willDestroy && comp.willDestroy.call(comp, comp.state);
     children = children || _internal_.childComponents;
@@ -271,6 +298,7 @@ function clearComponents(children: any, id: any) {
     let key, keyedvalue;
     for (key in keyed) {
       removeEvents((keyedvalue = keyed[key]).node, keyedvalue.evc);
+      keyedvalue.evc = keyedvalue.$events = keyedvalue.node = null;
     }
     _internal_.keyed = _internal_.dyn = undefined;
     children.forEach(clearComponents);
