@@ -10,6 +10,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "import-for-web": "^0.0.1"
+    "import-for-web": "^0.0.2"
   }
 }
