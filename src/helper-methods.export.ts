@@ -1,16 +1,27 @@
+function runMount(comp) {
+  comp.onMount.call(comp,comp.state);
+}
+function clearTemplates(compClass) {
+  compClass.template = undefined;
+}
+/**
+ * Execute tasks after node inserts into the DOM.
+ * `AfterInsert` is called right after every render/update cycle 
+ */
 function AfterInserts() {
-  MountBucket.forEach(function (comp) {
-    comp.onMount.apply(comp);
-  });
+  //Trigger onmount events
+  MountBucket.forEach(runMount);
   MountBucket.clear();
-  TemplateBucket.forEach(function (compClass) {
-    compClass.template = undefined;
-  });
+  //Clear the component templates store
+  TemplateBucket.forEach(clearTemplates);
   TemplateBucket.clear();
   global_template = undefined;
 }
 /**
- * Schedule a batch update
+ * Schedule a new render/update cycle
+ * 
+ * TODO: 
+ * - Use `requestAnimationFrame` on supported browsers instead of a `setTimeout`
  */
 function startUpdates() {
   if (!updates_initiated) {
@@ -23,13 +34,16 @@ function startUpdates() {
  */
 function update() {
   updating = true;
+  // Check and render new page if any
   const newpage = _newpageRendered();
   if (!newpage) {
+    // Cause update of components in current page
     dynamicNodeUpdates.forEach(updateStatefulDynamicnodes);
     dynamicNodeUpdates.clear();
     listUpdates.forEach(_listupdater);
     listUpdates.clear();
   } else {
+    // Ignore current page updates since a new page is rendered
     dynamicNodeUpdates.clear();
     listUpdates.clear();
   }
