@@ -10,21 +10,22 @@ HoneybeeJS uses a file-based routing system for page navigations. This is made p
 import HoneyBee from 'honey-bee';
 const { UI } = HoneyBee;
 
-const onClickHandler = (event, component_object)=>{
-    event.preventDefault();
-    // Load page dynamically
-    I4W.loadPage('./some_pages/somepage',{
-        args: undefined, // Can be anything to pass to your callback as argument
-        onload:(args)=>{
-            const Newpage = I4W.import.from('./some_pages/somepage');
-            UI.renderNwePage("/new_page's_pathname", NewPage); // renders a new pqge
-        },
-        onerror:(args)=>{
-            alert("Couldn't load page");
-        }
-    })
-}
 export default UI.CreateComponent('unique_identifier',function(){
+
+    const onClickHandler = (event, component_object)=>{
+        event.preventDefault();
+        // Load page dynamically
+        I4W.loadPage('./some_pages/somepage',{
+            args: undefined, // Can be anything to pass to your callback as argument
+            onload:(args)=>{
+                const Newpage = I4W.import.from('./some_pages/somepage');
+                UI.renderNwePage("/new_page's_pathname", NewPage); // renders a new pqge
+            },
+            onerror:(args)=>{
+                alert("Couldn't load page");
+            }
+        })
+    }
 
     return (
         <view>
