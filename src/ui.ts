@@ -219,7 +219,7 @@ class UI {
    *
    */
   getParentInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
-    const parent = This[internal].outerValue[internal].parent;
+    const parent = (This as any)[internal].outerValue[internal].parent;
     if (!parent) return null as any;
     return Blocks.get(parent)[internal].ins;
   }
@@ -229,7 +229,7 @@ class UI {
    *
    */
   getInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
-    return This[internal].ins;
+    return (This as any)[internal].ins;
   }
   /**
    * Get the shared data from other components.

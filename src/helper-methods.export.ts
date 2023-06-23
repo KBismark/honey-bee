@@ -1,7 +1,7 @@
-function runMount(comp) {
+function runMount(comp:any) {
   comp.onMount.call(comp,comp.state);
 }
-function clearTemplates(compClass) {
+function clearTemplates(compClass:any) {
   compClass.template = undefined;
 }
 /**

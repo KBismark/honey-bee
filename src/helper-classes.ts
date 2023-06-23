@@ -4,7 +4,7 @@
  * the only way to have state persist between renders.
  * 
  */
-function keepStateIfDestroyed(bool: boolean) {
+function keepStateIfDestroyed(this:any,bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
@@ -17,14 +17,14 @@ function keepStateIfDestroyed(bool: boolean) {
  * over memory and hence must be used only in cases when you are sure of reusing the component in no time.    
  * 
  */
-function keepEverythingIfDestroyed(bool: boolean) {
+function keepEverythingIfDestroyed(this:any, bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
   }
   _internal_.keepAll = !!bool;
 }
-function isIndependent() {
+function isIndependent(this:any) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
