@@ -11,7 +11,7 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-  CreateComponent<T>(name: string, fn: T & Function): T & BeeComponentInstance {
+  CreateComponent<T>(this:UI, name: string, fn: BeeComponentMethod<T>): BeeComponentClass<T>{
     const cm = new ComponentClass(fn);
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
@@ -28,6 +28,7 @@ class UI {
    *
    */
   CreateDynamicNode(
+    this:UI, 
     fn: (this: PossibleValues & { state: PossibleValues }, state: PossibleValues) => any,
     stateDependencyKeys: (keyof PossibleValues)[],
   ) {
@@ -41,7 +42,7 @@ class UI {
    * @param list
    * @returns {List}
    */
-  CreateList(list: (BeeComponentInstanceObject | string | boolean | number)[]) {
+  CreateList(this:UI, list: (BeeComponentInstanceObject | string | boolean | number)[]) {
     return new List(list);
   }
   /**
@@ -53,7 +54,7 @@ class UI {
    * 
    *
    */
-  CreatePage(pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance) {
+  CreatePage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance) {
     if (!firstPageCreated && pagelock == pageopen) {
       if (typeof ins == 'function') {
         ins = ins.instance();
@@ -85,7 +86,7 @@ class UI {
    * @param obj An object to serve as the key to unlock page creation later. Call to
    * `lockPageCreation` is ignored if page creation is already locked.
    */
-  lockPageCreation(obj: {}) {
+  lockPageCreation(this:UI, obj: {}) {
     if (pagelock == internal) {
       pagelock = obj;
     }
@@ -95,7 +96,7 @@ class UI {
    * @param obj An object to unlock page creation. Page creation will not be unlocked if
    * `obj` is not same as provided to `lockPageCreation` when locking page creation.
    */
-  unlockPageCreation(obj: {}) {
+  unlockPageCreation(this:UI, obj: {}) {
     if (pagelock == obj) {
       pagelock = pageopen;
     }
@@ -106,7 +107,7 @@ class UI {
    * @param args Argument to pass to the component method.
    *
    */
-  render(ins: BeeComponentInstanceObject, args?: any): BeeElement {
+  render(this:UI, ins: BeeComponentInstanceObject, args?: any): BeeElement {
     if (B.isSSR) {
       return undefined as any;
     }
@@ -195,7 +196,7 @@ class UI {
    *  when a popstate event is triggered.
    *
    */
-  renderNewPage(pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance, popstate?: unknown) {
+  renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance, popstate?: unknown) {
     if (!PAGES[pagePath]) {
       if (typeof ins == 'function') {
         ins = ins.instance();
@@ -217,7 +218,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getParentInstance(This: PossibleValues): BeeComponentInstanceObject {
+  getParentInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
     const parent = This[internal].outerValue[internal].parent;
     if (!parent) return null as any;
     return Blocks.get(parent)[internal].ins;
@@ -227,7 +228,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getInstance(This: any): BeeComponentInstanceObject {
+  getInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
     return This[internal].ins;
   }
   /**
@@ -235,10 +236,39 @@ class UI {
    * @param ins A component instance object
    *
    */
-  getPublicData(ins: BeeComponentInstanceObject): PossibleValues {
+  getPublicData(this:UI, ins: BeeComponentInstanceObject): PossibleValues {
     return Blocks.get(ins[internal_ins].id).public || {};
   }
-  getSourceData(url: string) {
+   /**
+   * Get data from data source.
+   * @param info Data source object
+   *
+   * @example
+   * const { UI } = HoneyBee;
+   * const url = "my_url";
+   *
+   * const myComponent = UI.CreateComponent('component_name',function({id,name}){
+   *
+   *   this.onCreation = async function({id}){
+   *     this.state = {data:null};
+   *     let full_url = `${url}?id=${id}`;
+   *     let value = UI.getSourceData(full_url);
+   *     let data;
+   *     if(!value){
+   *       let response = await fetch(full_url);
+   *       data = await response.json();
+   *     }else{
+   *       data = value.data;
+   *     }
+   *     UI.setSourceData({url:full_url,data:data});
+   *     this.state.data = data;
+   *   }
+   *
+   *   return <view><div><>{this.state.data}</><div></view>
+   *
+   * })
+   */
+  getSourceData(this:UI, url: string) {
     const data = B.externalData.data[url];
     if (!data) return undefined;
     return data.data;
@@ -272,7 +302,7 @@ class UI {
    *
    * })
    */
-  setSourceData(info: { url: string; data: any }) {
+  setSourceData(this:UI, info: { url: string; data: any }) {
     B.externalData.data[info.url] = { data: info.data };
   }
 }
@@ -314,4 +344,81 @@ type BeeComponentInstance = {
    */
   instance: (initArgs?: any) => BeeComponentInstanceObject;
 };
+
 type PossibleValues = { [k: string | symbol | number]: any };
+
+type BeeComponentClass<T> = ((args: T) => any) & BeeComponentInstance;
+
+type BeeComponentMethod<T> =  (this: BeeComponentObject<T>, args: T)=> void;
+
+interface BeeComponentObject<T>{
+  state: { [k: string | number]: any };
+  isIndependent: boolean;
+  /**
+   * Components can be **partially** hibernated when not needed for a time. Instead of destroying everything related to a component including 
+   * states, we can keep the state of the destroyed component in memory and reuse the state in our next render of the component. This is basically 
+   * the only way to have state persist between renders.
+   * 
+   */
+  keepStateIfDestroyed: typeof keepStateIfDestroyed;
+  /**
+   * Components can be **fully** hibernated when not needed for a time. Instead of destroying everything related to a component including 
+   * states, we can keep the detached component node in memory along with all data related to the component. This feature considers speed 
+   * over memory and hence must be used only in cases when you are sure of reusing the component in no time.    
+   * 
+   */
+  keepEverythingIfDestroyed: typeof keepEverythingIfDestroyed;
+
+  /**
+   * `this.onCreation` is the first method to be called when a component is first created. Set `this.state` to an object with
+   * all fields set to their initial values. All setups must be done here.    
+   * 
+   * **This method is called once in the component's lifetime**
+   */
+  onCreation(this: this, args?: T): void;
+  /**
+   * `this.onParentEffect` is only called when a component must update or render because it is nested in a different component (parent component)
+   * which is either updating or rendering.
+   * Hence, a state change does not trigger the `onParentEffect` event. 
+   */
+  onParentEffect(this:this,args?:T,state?:this['state']): void;
+  /**
+   * Set onMount event. This method is called when the head node of the component is inserted into the DOM.
+   */
+  onMount(this: this, state?: this['state']): void;
+  /**
+   * This method is called before a component is destroyed.
+   */
+  willDestroy(this: this, state?: this['state']): void;
+  /**
+   * This method is called after a component is destroyed.
+   */
+  onDestroyed(): void;
+  /**
+   * In HoneyBee, a component may either hibernate or destroyed. A hibernated component has its DOM node detached but may not destroyed.    
+   * 
+   * A **full** hibernation: `this.keepEverythingIfDestroyed` causes the node along with the component object untouched.    
+   *  
+   * A **partial** hibernation: `this.keepStateIfDestroyed` causes the node along with the component object destroyed without destroying the state object.    
+   *  
+   * This method is called before a component is hibernated.
+   */
+  willHibernate(this: this, state?: this['state']): void;
+  /**
+   * In HoneyBee, a component may either hibernate or destroyed. A hibernated component has its DOM node detached but may not destroyed.    
+   * 
+   * A **full** hibernation: `this.keepEverythingIfDestroyed` causes the node along with the component object untouched.    
+   *  
+   * A **partial** hibernation: `this.keepStateIfDestroyed` causes the node along with the component object destroyed without destroying the state object.    
+   *  
+   * This method is called after a component is hibernated.
+   * 
+   */
+  onHibernated(this: this, state?: this['state']): void;
+  /**
+   * `this.public` is the public space through which components can access and communicate to other components.
+   * It must return the value to be shared with others.
+   * 
+   */
+  public(this: this, args?: T, state?: this['state']): PossibleValues;
+}
