@@ -36,8 +36,24 @@ function isIndependent(this:any) {
  * 
  */
 class ComponentClass {
-  constructor(fn: Function) {
-    this.fn = fn;
+  constructor(fn: any, type?: 'object' | 'class' | 'function') {
+    switch (type) {
+      case 'function':
+        this.fn = fn;
+        break;
+      case 'class':
+        fn = new fn();
+      case 'object':
+        this.proto = fn;
+        this.isIndependent = !!fn.isIndependent;
+        fn.keepStateIfDestroyed = keepStateIfDestroyed;
+        fn.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
+        fn.isIndependent = isIndependent;
+        this.fn = fn.render;
+        fn.render = undefined;
+        break;
+    }
+    
     this.id = ++dinstinctComponents;
   }
   template: any = undefined;
@@ -57,16 +73,20 @@ class ComponentClass {
     this.dn = dn;
     // Set static nodes attribute dependencies
     this.deps = attrDependencies;
-    // Set the prototype object that is inherited by all instances of the component class
-    this.proto = proto;
+    
     // Set the html method. It returns the static part of the view
     this.html = htmlMethod;
     this.setAttr = setter;
     this.dynMethod = dynMethod;
-    this.isIndependent = !!proto.isIndependent;
-    proto.keepStateIfDestroyed = keepStateIfDestroyed;
-    proto.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
-    proto.isIndependent = isIndependent;
+    if (!this.proto) {
+      // Set the prototype object that is inherited by all instances of the component class
+      this.proto = proto;
+      this.isIndependent = !!proto.isIndependent;
+      proto.keepStateIfDestroyed = keepStateIfDestroyed;
+      proto.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
+      proto.isIndependent = isIndependent;
+    }
+    
   }
   getTemplate() {
     if (!this.template) {
