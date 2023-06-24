@@ -12,7 +12,41 @@ class UI {
    *
    */
   CreateComponent<T>(this:UI, name: string, fn: BeeComponentMethod<T>): BeeComponentClass<T>{
-    const cm = new ComponentClass(fn);
+    const cm = new ComponentClass(fn,'function');
+    CreatedComponents.set(cm.id, cm);
+    const f: any = ComponentMethod.bind({ fnId: cm.id });
+    f.instance = getComponentInstance.bind({ fnId: cm.id });
+    name = cm.Name = B._imex.getPath() + name;
+    Namings[name] = f.instance;
+    return f;
+  }
+   /**
+   *
+   * @param name A unique string to identify the component. The value must be unique throughout the current file
+   * where `UI.CreateComponent` is called.
+   *
+   * @param fn Provide the actual component, a function with only one argument as props to the component.
+   *
+   */
+   CreateComponentFromClass<T>(this:UI, name: string, cls: any): BeeComponentClass<T>{
+    const cm = new ComponentClass(cls,'class');
+    CreatedComponents.set(cm.id, cm);
+    const f: any = ComponentMethod.bind({ fnId: cm.id });
+    f.instance = getComponentInstance.bind({ fnId: cm.id });
+    name = cm.Name = B._imex.getPath() + name;
+    Namings[name] = f.instance;
+    return f;
+   }
+   /**
+   *
+   * @param name A unique string to identify the component. The value must be unique throughout the current file
+   * where `UI.CreateComponent` is called.
+   *
+   * @param fn Provide the actual component, a function with only one argument as props to the component.
+   *
+   */
+   CreateComponentFromObject<T>(this:UI, name: string,obj:ComponentObject<T>): BeeComponentClass<T>{
+     const cm = new ComponentClass(obj,'object');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
     f.instance = getComponentInstance.bind({ fnId: cm.id });
@@ -42,7 +76,7 @@ class UI {
    * @param list
    * @returns {List}
    */
-  CreateList(this:UI, list: (BeeComponentInstanceObject | string | boolean | number)[]) {
+  CreateList(this:UI, list: (BeeComponentInstanceObject | string | boolean | number)[]): List {
     return new List(list);
   }
   /**
@@ -54,7 +88,7 @@ class UI {
    * 
    *
    */
-  CreatePage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance) {
+  CreatePage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|BeeComponentClass<any>) {
     if (!firstPageCreated && pagelock == pageopen) {
       if (typeof ins == 'function') {
         ins = ins.instance();
@@ -196,7 +230,7 @@ class UI {
    *  when a popstate event is triggered.
    *
    */
-  renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|Function&BeeComponentInstance, popstate?: unknown) {
+  renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|BeeComponentClass<any>, popstate?: unknown) {
     if (!PAGES[pagePath]) {
       if (typeof ins == 'function') {
         ins = ins.instance();
@@ -218,7 +252,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getParentInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
+  getParentInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject {
     const parent = (This as any)[internal].outerValue[internal].parent;
     if (!parent) return null as any;
     return Blocks.get(parent)[internal].ins;
@@ -228,7 +262,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getInstance<U>(this:UI, This: BeeComponentObject<U>): BeeComponentInstanceObject {
+  getInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject {
     return (This as any)[internal].ins;
   }
   /**
@@ -335,25 +369,22 @@ function getComponentInstance(this: { fnId: number }, initArgs: any) {
   return _internal_.ins;
 }
 
-type BeeComponentInstance = {
+type BeeComponentInstance<T> = {
   /**
    *
    * @param initArgs  Provide an initial argument to the component instance.
    * The value can be accessed with `this.initArgs` in the `onCreation` method.
    *
    */
-  instance: (initArgs?: any) => BeeComponentInstanceObject;
+  instance: (initArgs?:T) => BeeComponentInstanceObject;
 };
 
 type PossibleValues = { [k: string | symbol | number]: any };
 
-type BeeComponentClass<T> = ((args: T) => any) & BeeComponentInstance;
+type BeeComponentClass<T> = ((args: T) => any) & BeeComponentInstance<T>;
 
-type BeeComponentMethod<T> =  (this: BeeComponentObject<T>, args: T)=> void;
-
-interface BeeComponentObject<T>{
-  state: { [k: string | number]: any };
-  isIndependent: boolean;
+type BeeComponentMethod<T> =  (this: ComponentObject<T>, args: T)=> void;
+type Insiders = {
   /**
    * Components can be **partially** hibernated when not needed for a time. Instead of destroying everything related to a component including 
    * states, we can keep the state of the destroyed component in memory and reuse the state in our next render of the component. This is basically 
@@ -368,6 +399,14 @@ interface BeeComponentObject<T>{
    * 
    */
   keepEverythingIfDestroyed: typeof keepEverythingIfDestroyed;
+}
+class ComponentObject<T>{
+  declare state?: { [k: string | number]: any };
+  declare isIndependent?: boolean;
+  
+  // declare keepStateIfDestroyed: typeof keepStateIfDestroyed;
+  
+  // declare keepEverythingIfDestroyed: typeof keepEverythingIfDestroyed;
 
   /**
    * `this.onCreation` is the first method to be called when a component is first created. Set `this.state` to an object with
@@ -375,25 +414,25 @@ interface BeeComponentObject<T>{
    * 
    * **This method is called once in the component's lifetime**
    */
-  onCreation(this: this, args?: T): void;
+  declare onCreation?:(this: this&Insiders, ...args: [T])=> void;
   /**
    * `this.onParentEffect` is only called when a component must update or render because it is nested in a different component (parent component)
    * which is either updating or rendering.
    * Hence, a state change does not trigger the `onParentEffect` event. 
    */
-  onParentEffect(this:this,args?:T,state?:this['state']): void;
+  declare onParentEffect?:(this:this&Insiders,...args: [T,this['state']])=> void;
   /**
    * Set onMount event. This method is called when the head node of the component is inserted into the DOM.
    */
-  onMount(this: this, state?: this['state']): void;
+  declare onMount?:(this: this&Insiders,...args: [this['state']])=> void;
   /**
    * This method is called before a component is destroyed.
    */
-  willDestroy(this: this, state?: this['state']): void;
+  declare willDestroy?:(this: this&Insiders,...args: [this['state']])=> void;
   /**
    * This method is called after a component is destroyed.
    */
-  onDestroyed(): void;
+  declare onDestroyed?:()=> void;
   /**
    * In HoneyBee, a component may either hibernate or destroyed. A hibernated component has its DOM node detached but may not destroyed.    
    * 
@@ -403,7 +442,7 @@ interface BeeComponentObject<T>{
    *  
    * This method is called before a component is hibernated.
    */
-  willHibernate(this: this, state?: this['state']): void;
+  declare willHibernate?:(this: this&Insiders,...args: [this['state']])=> void;
   /**
    * In HoneyBee, a component may either hibernate or destroyed. A hibernated component has its DOM node detached but may not destroyed.    
    * 
@@ -414,11 +453,17 @@ interface BeeComponentObject<T>{
    * This method is called after a component is hibernated.
    * 
    */
-  onHibernated(this: this, state?: this['state']): void;
+  declare onHibernated?:(this: this&Insiders,...args: [this['state']])=> void;
   /**
    * `this.public` is the public space through which components can access and communicate to other components.
    * It must return the value to be shared with others.
    * 
    */
-  public(this: this, args?: T, state?: this['state']): PossibleValues;
+  declare public?:(this: this&Insiders, ...args: [T,this['state']])=> PossibleValues;
+}
+
+
+
+interface BeeComponentObjects<T> extends ComponentObject<T>{
+  //new (args: T)
 }
