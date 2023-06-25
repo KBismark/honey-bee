@@ -1,8 +1,9 @@
 var markupPattern =
-    /<!--[\s\S]*?-->|<(\/|\s?)\s*([a-zA-Z][-.:0-9_a-zA-Z]*)((?:\s+[^>]*?(?:(?:'[^']*')|(?:"[^"]*"))?)*)\s*(\/?)>/g,
+    /<!--[\s\S]*?-->|<(\/|\s?)\s*([a-zA-Z][-.:0-9_a-zA-Z]*)((?:\s+[^>]*?(?:(?:'[^']*')|(?:"[^"]*"))?)*)\s*(\/?)>/g,//(\s*(\/>|>))  (?!(\=>|>\=))
   attributePattern =
-    /((\$[a-zA-Z0-9-_:()[\]#]+)|([a-zA-Z()[\]#][a-zA-Z0-9-_:()[\]#]*))(?:\s*=\s*((?:'[^']*')|(?:"[^"]*")|(?:{[^]*?})(?=((\s+\S+\s*=)|(\s*(\/>|>))))|\S+))?/gi,
-  templatePattern =
+   // /((\$[a-zA-Z0-9-_:()[\]#]+)|([a-zA-Z()[\]#][a-zA-Z0-9-_:()[\]#]*))(?:\s*=\s*((?:'[^']*')|(?:"[^"]*")|(?:{[^]*?})(?=(\s*\/>))|((\s*>)(?!\=))|(?=(\s+\S+\s*=))|\S+))?/gi,
+   /((\$[a-zA-Z0-9-_:()[\]#]+)|([a-zA-Z()[\]#][a-zA-Z0-9-_:()[\]#]*))(?:\s*=\s*((?:'[^']*')|(?:"[^"]*")|(?:{[^]*?})(?=((\s+\S+\s*=)|(\s*(\/>|>))))|\S+))?/gi,
+    templatePattern =
     /<>\s*{(\S|\s)*?(?!(?:'[^']*')|(?:"[^"]*")|(?:`[^`]*`))\s*}\s*<\/>/g,
   festPattern = /<view>(\S|\s)*?<\/view>/g,
   themePattern = /\/\/<theme>(.*?)\/\/<\/theme>/gs;
@@ -284,7 +285,7 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
   var s1 = "",
     s2 = "";
   if (node.head) {
-    s1 = "HoneyBee.create(()=>'";
+    s1 = "HoneyBee.create(()=>`";
     //s2 = "',this)";
     depth = [];
     kNdN = {
@@ -320,69 +321,33 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
     //Find style and class attributes and push them at the end of the attributes array
     itemIndex = atrris.indexOf("style");
     if (itemIndex > -1) {
-      //atrris.splice(itemIndex, 1);
-      node.attr.style = node.attr.style
+      const isDynamic = node.attr.style.startsWith("{") && node.attr.style.endsWith("}");
+      if (!isDynamic) {
+        node.attr.style = node.attr.style
         .replace(/.$/, "")
         .replace('"', "")
         .trim();
-      var styleString = node.attr.style;
-      // if (isKeyed) {
-      //   if (node.attr.style[node.attr.style.length - 1] == ";") {
-      //     node.attr.style = node.attr.style.replace(/.$/, "");
-      //   }
-      //   var styles = node.attr.style.split(";");
-      //   var key, matched;
-      //   for (i = 0; i < styles.length; i++) {
-      //     styles[i] = styles[i].split(":");
-      //     if (styles[i].length !== 2) {
-      //       continue;
-      //     }
-      //     key = styles[i][0].match(/-[a-z]/g);
-      //     if (key) {
-      //       while (key.length > 0) {
-      //         matched = key.shift();
-      //         styles[i][0] = styles[i][0].replace(
-      //           matched,
-      //           matched[1].toUpperCase()
-      //         );
-      //       }
-      //     }
-      //     stylesObject[styles[i][0]] = styles[i][1].trim();
-      //   }
-      //   node.attr.style = `"${styleString}"`;
-      //   // JSON.stringify({
-      //   //   raw: styleString,
-      //   //   value: stylesObject,
-      //   // });
-      // } else {
+        var styleString = node.attr.style;
+     
         node.attr.style = `${styleString}`;
-      //}
-
-      //itemIndex = atrris.indexOf("class");
-      // if (itemIndex < 0) {
-      //   atrris.push("class");
-      //   node.attr["class"] = '"';
-      // } else {
-      //   node.attr["class"] = node.attr["class"].replace(/.$/, "");
-      // }
-      // node.attr["class"] = `${node.attr["class"]} ${cssBuilder(
-      //   node.attr["style"]
-      // ).join(" ")}${node.attr["class"][0]}`;
+      } else {
+        node.attr.Style = node.attr.style;
+        delete node.attr.style;
+      }
+      
     }
+
     let length;
     if (typeof node.attr.class == "string" && (length = node.attr.class.length) > 3) {
-      node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
-      var classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
-      // if (isKeyed) {
-      //   classObject = toDistinctObject(classString);
-      //   node.attr.class = `"${classString.join(" ")}"`;
-      //   // JSON.stringify({
-      //   //   raw: classString.join(" "),
-      //   //   value: toDistinctObject(classString),
-      //   // });
-      // } else {
-        node.attr.class = `${classString}`;
-     // }
+      const isDynamic = node.attr.class.startsWith("{")&&node.attr.class.endsWith("}")
+      if (!isDynamic) {
+        node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
+        var classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
+          node.attr.class = `${classString}`;
+      } else {
+        node.attr.Class = node.attr.class;
+        delete node.attr.class;
+      }
     } else {
       node.attr.class = isKeyed ? { value: null } : "";
       delete node.attr.class;
@@ -462,8 +427,9 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
      // attrSetter.attr = `${attrSetter.attr}\n${m}=${getNode(depth)};`;
       for (i = 0; i < atrris.length; i++) {
         k = atrris[i];
-        v = node.attr[k] = node.attr[k].replace(/(">)$/,'"');
-        if (typeof v == "string") {
+       
+        if (typeof node.attr[k] == "string") {
+          v = node.attr[k] = node.attr[k].replace(/(">)$/,'"');
           if (v.startsWith("{") && v.endsWith("}")) {
             if (!kf) {
               kf = true;
@@ -508,7 +474,6 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                 } else {
                   let sep = { class: " ", style: ';' }
                   let key = keyname;//.split('"');
-                  console.log(key,`${key}${i}`);
                  // key = key.slice(1, key.length - 1).join('"');
                   attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
                   attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
@@ -521,16 +486,28 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                 }
               } else {
                 k=k.charAt(0).toLowerCase()+k.replace(/^./, "");
-                switch (k) {
-                  case "class":
-                    attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('class',\`\${(${m}.getAttribute('class')||'')} \${${v}}\`)`;
-                    break;
-                  case "style":
-                    attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('style',\`\${(${m}.getAttribute('style')||'')};\${${v}}\`)`;
-                    break;
-                  default:
-                    attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('${k}',${v})`;
-                    break;
+                // switch (k) {
+                //   case "class":
+                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('class',\`\${(${m}.getAttribute('class')||'')} \${${v}}\`)`;
+                //     break;
+                //   case "style":
+                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('style',\`\${(${m}.getAttribute('style')||'')};\${${v}}\`)`;
+                //     break;
+                //   default:
+                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('${k}',${v})`;
+                //     break;
+                // }
+                
+                let sep = { class: " ", style: ';' }
+                const isCS = ["style", "class"].includes(k);
+                  let key = keyname;
+                attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
+                attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
+                  `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${k}',\`${isCS&&node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a}\`);` +
+                  `if(set){fn.key=nme;fn.$dep=[]}},`;
+                if (isCS) {
+                  node.attr[k] = undefined;
+                  delete node.attr[k];
                 }
               }
               
@@ -629,7 +606,7 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
     }
   }
   if (node.head) {
-    s2 = `',\nfunction(args,_$,_$ev,_$id,_$dp,_$set){\nlet state = this.state,_$fn;${attrSetter.attr}\n`
+    s2 = `\`,\nfunction(args,_$,_$ev,_$id,_$dp,_$set){\nlet state = this.state,_$fn;${attrSetter.attr}\n`
       + `return [${attrSetter.keys}}]},`
       + `${attrSetter.dynamic}length:${attrSetter.dynCount}},\n${attrSetter.depAttr}},function(_$){return ${attrSetter.dynNodes}}}, this)`;
    // s2+=`,\n${attrSetter.dynamic}length:${attrSetter.dynCount}},this)`
