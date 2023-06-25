@@ -5,6 +5,12 @@ const deps = {value:{dependencyMap:{},dependentsMap:{}}};
 {
   [`${path.join(`${__dirname}/dist/modules`,"/index.js")}`]: [],
 
+  [`${path.join(`${__dirname}/dist/modules`,"/movie-app/exporter.js")}`]: [
+  path.join(`${__dirname}/dist/modules`,"/movie-app/index.js")
+],
+
+  [`${path.join(`${__dirname}/dist/modules`,"/movie-app/index.js")}`]: [],
+
   [`${path.join(`${__dirname}/dist/modules`,"/netflix-mobile-navigation/exporter.js")}`]: [
   path.join(`${__dirname}/dist/modules`,"/netflix-mobile-navigation/index.js")
 ],
@@ -15,6 +21,14 @@ const deps = {value:{dependencyMap:{},dependentsMap:{}}};
 const Map2 = {
   [`${path.join(`${__dirname}/dist/modules`,"/index.js")}`]: [
   path.join(`${__dirname}/dist/modules`,"/netflix-mobile-navigation/index.js")
+],
+
+  [`${path.join(`${__dirname}/dist/modules`,"/movie-app/exporter.js")}`]: [
+  path.join(`${__dirname}/dist/modules`,"/index.js")
+],
+
+  [`${path.join(`${__dirname}/dist/modules`,"/movie-app/index.js")}`]: [
+  path.join(`${__dirname}/dist/modules`,"/movie-app/exporter.js")
 ],
 
   [`${path.join(`${__dirname}/dist/modules`,"/netflix-mobile-navigation/exporter.js")}`]: [
