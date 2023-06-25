@@ -1,9 +1,9 @@
 class Bee {
   UI: UI;
-  isSelectiveRendering: boolean;
-  selector: any;
-  externalData: { data: { [k: string]: { data: any } } };
-  _imex: any;
+  private isSelectiveRendering: boolean;
+  private selector: any;
+  private externalData: { data: { [k: string]: { data: any } } };
+  private _imex: any;
   constructor() {
     this.UI = new UI();
     this.isSelectiveRendering = false;
@@ -14,12 +14,12 @@ class Bee {
     }
     this.externalData = _ext;
   }
-  isSSR: boolean = (window as any).HoneyBee ? (window as any).HoneyBee.isSSR : false;
+  private isSSR: boolean = (window as any).HoneyBee ? (window as any).HoneyBee.isSSR : false;
   /**
    * Used for selecting independent components that needs to be hydrated after SSR.    
    * **----Internal method----**
    */
-  select(node: any, eventName: any) {
+  private select(node: any, eventName: any) {
     const independentNode = getIndependentNode(node);
     const path = independentNode.getAttribute('bee-path'),
       compName = independentNode.getAttribute('bee-N');
@@ -87,9 +87,9 @@ class Bee {
  * If I4W is not included, set a shim
  */
 if (typeof (window as any).I4W != 'undefined') {
-  Bee.prototype._imex = (window as any).I4W;
+  (Bee as any).prototype._imex = (window as any).I4W;
 } else {
-    (window as any).I4W = Bee.prototype._imex = {
+    (window as any).I4W = (Bee as any).prototype._imex = {
     pathname: '',
     getPath() {
       return this.pathname;
@@ -99,7 +99,7 @@ if (typeof (window as any).I4W != 'undefined') {
   };
 }
 if ((window as any).HoneyBee) {
-  (window as any).HoneyBee.select = Bee.prototype.select;
+  (window as any).HoneyBee.select = (Bee as any).prototype.select;
 }
 /**
  * Traverses from a child node to the nearest parent node which is marked as independent head node
