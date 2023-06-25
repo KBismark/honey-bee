@@ -35,6 +35,21 @@ const PageInstance = UI.CreateComponent('main', function () {
                         })
                     }}>GO TO NETFLIX MOBILE NAVIGATION PAGE</a>
                 </p>
+                <p>
+                    <a href="/movie-app" style="font-size:22px;font-weight:bold;" onClick={function(e, This){
+                        e.preventDefault();
+                        /* Load page dynamically */
+                        I4W.loadPage('./movie-app/exporter', {
+                            onload() {
+                                const movieApp = I4W.import.from('./movie-app/exporter');
+                                UI.renderNewPage('/movie-app',movieApp);
+                            },
+                            onerror() {
+                                alert("Could not load page: /movie-app")
+                            }
+                        })
+                    }}>GO TO MOVIES PAGE</a>
+                </p>
             </div>
         </view>
     )
