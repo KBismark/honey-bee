@@ -51,7 +51,7 @@ const ext_state = Symbol();
 const independent = Symbol();
 // We do selective hydration. How do we select the right components to hydrate.
 // We store paths to components in `Namings`. format: <file_src + component_unique_id> : BeeComponentInstance
-const Namings: { [k: string]: () => BeeComponentInstanceObject } = {};
+const Namings: { [k: string]: () => BeeComponentInstanceObject<any> } = {};
 // Component classes, lists, and components are ID'ed incrementally
 let dinstinctComponents = 0;
 let componentsID = 0;
@@ -122,10 +122,6 @@ window.addEventListener(
   false,
 );
 
-type BeeComponentInstanceObject = {
-  [k: symbol]: { fnId: number; id: number; out?: BeeElement };
-  readonly isComponent: true;
-};
 interface BeeElement {
   [k: symbol]: {
     node: HTMLElement | any;

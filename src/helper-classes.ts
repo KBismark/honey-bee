@@ -36,7 +36,7 @@ function isIndependent(this:any) {
  * 
  */
 class ComponentClass {
-  constructor(fn: any, type?: 'object' | 'class' | 'function') {
+  constructor(fn: any, type: 'object' | 'class' | 'function') {
     switch (type) {
       case 'function':
         this.fn = fn;
@@ -56,16 +56,16 @@ class ComponentClass {
     
     this.id = ++dinstinctComponents;
   }
-  template: any = undefined;
-  dn: any = undefined;
-  fn?: Function = undefined;
+  template: any;
+  dn: any;
+  fn?: Function;
   id: number = 0;
-  proto: any = undefined;
-  html: any = undefined;
-  setAttr: any = undefined;
-  deps: any = undefined;
+  proto: any;
+  html: any;
+  setAttr: any;
+  deps: any;
   isIndependent: boolean = false;
-  dynMethod: any = undefined;
+  dynMethod: any;
   Name?: string;
 
   setup(htmlMethod: () => string, setter: any, dn: {length:number,[k:string]:Function|number}, attrDependencies: {[k:string]:Function}, dynMethod: Function, proto: any) {
@@ -134,7 +134,7 @@ class ComponentInstance {
     },
   };
   // holds the `BeeComponentInstanceObject` of the component
-  ins: BeeComponentInstanceObject = { [internal_ins]: { fnId: 0, id: 0, out: undefined }, isComponent: true };
+  ins: BeeComponentInstanceObject<any> = { [internal_ins]: { fnId: 0, id: 0, out: undefined }, isComponent: true };
   // All components are initially not created until it first renders
   created? = false;
   // Pure components cannot be hibernated

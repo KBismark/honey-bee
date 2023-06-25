@@ -17,10 +17,10 @@ function runDynamicnodes(id: number, classDyn: Array<any>, compDyn: any) {
     renderingComponent.chain = _internal_.childComponents;
     renderingComponent.id = id;
     let serverRenderedIndependentNodes: Array<any> | undefined = undefined;
-    if (B.selector && !B.selector.ignore) {
-      B.selector.ignore = B.isSelectiveRendering = true;
+    if ((B as any).selector && !(B as any).selector.ignore) {
+      (B as any).selector.ignore = (B as any).isSelectiveRendering = true;
       serverRenderedIndependentNodes = Object.values(
-        B.selector.node.getElementsByClassName('bee-' + B.selector.iname) || {},
+        (B as any).selector.node.getElementsByClassName('bee-' + (B as any).selector.iname) || {},
       );
     }
 

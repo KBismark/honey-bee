@@ -53,7 +53,7 @@ class List {
     listUpdates.set(_internal_.id, _internal_);
     startUpdates();
   }
-  insertBefore<T, U = string | number | boolean | BeeComponentInstanceObject>(
+  insertBefore<T, U = string | number | boolean | BeeComponentInstanceObject<any>>(
     index: number,
     list: U | Array<U>,
     controller?: { data: T; handler: (listItem: U, index: number, data: T, args: any, This: any) => void },

@@ -288,7 +288,7 @@ type ListInternal = {
   type: number;
   stack: any[];
   length: number;
-  curData: (string | BeeComponentInstanceObject)[];
+  curData: (string | BeeComponentInstanceObject<any>)[];
   getList(): ListInternal;
 
   pos: { head?: any; tail?: any; dynIndex?: number; parent?: number };

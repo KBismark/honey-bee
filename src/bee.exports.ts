@@ -4,7 +4,7 @@ function clone(_internal_: any) {
   if (compClass.isIndependent) {
     _internal_.independent = true;
   }
-  if (B.isSelectiveRendering && _internal_.independent) {// Is hydrating
+  if ((B as any).isSelectiveRendering && _internal_.independent) {// Is hydrating
     return independent; // Independent component prevents further rendering
   }
   const node = compClass.getTemplate();

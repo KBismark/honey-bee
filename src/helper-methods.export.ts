@@ -200,7 +200,7 @@ function _newpageRendered() {
     }
     if (page_tracking.clientRendered) {
       const newpage_block = Blocks.get(newPage);
-      let newPageInstance: BeeComponentInstanceObject;
+      let newPageInstance: BeeComponentInstanceObject<any>;
       if (!newpage_block) {
         // The new page's instance object was totally destroyed.
         // Create a new instance of the component used in rendering this page earlier on.

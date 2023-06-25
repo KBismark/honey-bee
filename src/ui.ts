@@ -11,12 +11,12 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-  CreateComponent<T>(this:UI, name: string, fn: BeeComponentMethod<T>): BeeComponentClass<T>{
+  CreateComponent<args,InitArgs>(this:UI, name: string, fn: BeeComponentMethod<args>): BeeComponentClass<args,InitArgs>{
     const cm = new ComponentClass(fn,'function');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
     f.instance = getComponentInstance.bind({ fnId: cm.id });
-    name = cm.Name = B._imex.getPath() + name;
+    name = cm.Name = (B as any)._imex.getPath() + name;
     Namings[name] = f.instance;
     return f;
   }
@@ -28,12 +28,12 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-   CreateComponentFromClass<T>(this:UI, name: string, cls: any): BeeComponentClass<T>{
+   CreateComponentFromClass<args,InitArgs>(this:UI, name: string, cls: any): BeeComponentClass<args,InitArgs>{
     const cm = new ComponentClass(cls,'class');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
     f.instance = getComponentInstance.bind({ fnId: cm.id });
-    name = cm.Name = B._imex.getPath() + name;
+    name = cm.Name = (B as any)._imex.getPath() + name;
     Namings[name] = f.instance;
     return f;
    }
@@ -45,12 +45,12 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-   CreateComponentFromObject<T>(this:UI, name: string,obj:ComponentObject<T>): BeeComponentClass<T>{
+   CreateComponentFromObject<args,InitArgs>(this:UI, name: string,obj:ComponentObject<args>): BeeComponentClass<args,InitArgs>{
      const cm = new ComponentClass(obj,'object');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
     f.instance = getComponentInstance.bind({ fnId: cm.id });
-    name = cm.Name = B._imex.getPath() + name;
+    name = cm.Name = (B as any)._imex.getPath() + name;
     Namings[name] = f.instance;
     return f;
   }
@@ -76,7 +76,7 @@ class UI {
    * @param list
    * @returns {List}
    */
-  CreateList(this:UI, list: (BeeComponentInstanceObject | string | boolean | number)[]): List {
+  CreateList(this:UI, list: (BeeComponentInstanceObject<any> | string | boolean | number)[]): List {
     return new List(list);
   }
   /**
@@ -88,7 +88,7 @@ class UI {
    * 
    *
    */
-  CreatePage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|BeeComponentClass<any>) {
+  CreatePage(this:UI, pagePath: string, ins: BeeComponentInstanceObject<any>|BeeComponentClass<any,any>) {
     if (!firstPageCreated && pagelock == pageopen) {
       if (typeof ins == 'function') {
         ins = ins.instance();
@@ -99,19 +99,19 @@ class UI {
       PAGES[pagePath] = id;
       PAGES_TYPES[id] = ins[internal_ins].fnId;
       firstPageCreated = true;
-      if (B.isSSR) {
-        B.isSSR = false;
+      if ((B as any).isSSR) {
+        (B as any).isSSR = false;
         // ins[internal_ins].out[internal].node = 8
         return;
       }
       page_tracking.clientRendered = true;
-      const app = B.UI.render(ins);
+      const app = (B as any).UI.render(ins);
       (document.getElementById('page') as HTMLElement).replaceWith(app[internal].node);
       AfterInserts();
       return;
     }
-    if (B.isSSR) {
-      B.isSSR = false;
+    if ((B as any).isSSR) {
+      (B as any).isSSR = false;
       return;
     }
   }
@@ -141,8 +141,8 @@ class UI {
    * @param args Argument to pass to the component method.
    *
    */
-  render(this:UI, ins: BeeComponentInstanceObject, args?: any): BeeElement {
-    if (B.isSSR) {
+  render<T extends BeeComponentInstanceObject<any>>(this:UI,ins:T,args?:T['ArgumentType']):BeeElement{
+    if ((B as any).isSSR) {
       return undefined as any;
     }
     const id = ins[internal_ins].id;
@@ -230,10 +230,10 @@ class UI {
    *  when a popstate event is triggered.
    *
    */
-  renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject|BeeComponentClass<any>, popstate?: unknown) {
+  renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject<any>|BeeComponentClass<any,any>, popstate?: unknown) {
     if (!PAGES[pagePath]) {
       if (typeof ins == 'function') {
-        ins = ins.instance();
+        ins = ins.instance()[0];
       }
       const id = ins[internal_ins].id;
       PAGES[pagePath] = id;
@@ -252,7 +252,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getParentInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject {
+  getParentInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject<any> {
     const parent = (This as any)[internal].outerValue[internal].parent;
     if (!parent) return null as any;
     return Blocks.get(parent)[internal].ins;
@@ -262,7 +262,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject {
+  getInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject<any> {
     return (This as any)[internal].ins;
   }
   /**
@@ -270,7 +270,7 @@ class UI {
    * @param ins A component instance object
    *
    */
-  getPublicData(this:UI, ins: BeeComponentInstanceObject): PossibleValues {
+  getPublicData(this:UI, ins: BeeComponentInstanceObject<any>): PossibleValues {
     return Blocks.get(ins[internal_ins].id).public || {};
   }
    /**
@@ -303,7 +303,7 @@ class UI {
    * })
    */
   getSourceData(this:UI, url: string) {
-    const data = B.externalData.data[url];
+    const data = (B as any).externalData.data[url];
     if (!data) return undefined;
     return data.data;
   }
@@ -337,11 +337,11 @@ class UI {
    * })
    */
   setSourceData(this:UI, info: { url: string; data: any }) {
-    B.externalData.data[info.url] = { data: info.data };
+    (B as any).externalData.data[info.url] = { data: info.data };
   }
 }
 function ComponentMethod(this: { fnId: number }, args: any) {
-  if (B.isSSR) {
+  if ((B as any).isSSR) {
     return;
   }
   let _b: any;
@@ -362,28 +362,37 @@ function ComponentMethod(this: { fnId: number }, args: any) {
   return out;
 }
 function getComponentInstance(this: { fnId: number }, initArgs: any) {
-  // if (B.isSSR) { return}
+  // if ((B as any).isSSR) { return}
   let _b: any;
   const _internal_ = new ComponentInstance({ methodId: this.fnId, args: undefined, initArgs: initArgs });
   Blocks.set(_internal_.id, ((_b = {}), (_b[internal] = _internal_), _b));
   return _internal_.ins;
 }
 
-type BeeComponentInstance<T> = {
+type BeeComponentInstance<T,I> = {
   /**
    *
    * @param initArgs  Provide an initial argument to the component instance.
    * The value can be accessed with `this.initArgs` in the `onCreation` method.
    *
    */
-  instance: (initArgs?:T) => BeeComponentInstanceObject;
+  instance: (initArgs?: I) => BeeComponentInstanceObject<T>;
+    //BeeComponentInstanceObject;
 };
+interface  BeeComponentInstanceObject<T>{
+  ArgumentType?: T;
+  [k: symbol]: { fnId: number; id: number; out?: BeeElement };
+  readonly isComponent: true;
+}
 
 type PossibleValues = { [k: string | symbol | number]: any };
 
-type BeeComponentClass<T> = ((args: T) => any) & BeeComponentInstance<T>;
+type BeeComponentClass<T,InitArgs> = ((args: T) => any) & BeeComponentInstance<T,InitArgs>;
 
-type BeeComponentMethod<T> =  (this: ComponentObject<T>, args: T)=> void;
+type BeeComponentMethod<T> = (this: ComponentObject<T>, args: T) => void;
+/**
+ * These are only accessible inside the component object methods.
+ */
 type Insiders = {
   /**
    * Components can be **partially** hibernated when not needed for a time. Instead of destroying everything related to a component including 
@@ -400,13 +409,9 @@ type Insiders = {
    */
   keepEverythingIfDestroyed: typeof keepEverythingIfDestroyed;
 }
-class ComponentObject<T>{
+class ComponentObject<args>{
   declare state?: { [k: string | number]: any };
   declare isIndependent?: boolean;
-  
-  // declare keepStateIfDestroyed: typeof keepStateIfDestroyed;
-  
-  // declare keepEverythingIfDestroyed: typeof keepEverythingIfDestroyed;
 
   /**
    * `this.onCreation` is the first method to be called when a component is first created. Set `this.state` to an object with
@@ -414,13 +419,13 @@ class ComponentObject<T>{
    * 
    * **This method is called once in the component's lifetime**
    */
-  declare onCreation?:(this: this&Insiders, ...args: [T])=> void;
+  declare onCreation?:(this: this&Insiders, ...args: [args])=> void;
   /**
    * `this.onParentEffect` is only called when a component must update or render because it is nested in a different component (parent component)
    * which is either updating or rendering.
    * Hence, a state change does not trigger the `onParentEffect` event. 
    */
-  declare onParentEffect?:(this:this&Insiders,...args: [T,this['state']])=> void;
+  declare onParentEffect?:(this:this&Insiders,...args: [args,this['state']])=> void;
   /**
    * Set onMount event. This method is called when the head node of the component is inserted into the DOM.
    */
@@ -459,11 +464,11 @@ class ComponentObject<T>{
    * It must return the value to be shared with others.
    * 
    */
-  declare public?:(this: this&Insiders, ...args: [T,this['state']])=> PossibleValues;
+  declare public?:(this: this&Insiders, ...args: [args,this['state']])=> PossibleValues;
 }
 
 
 
-interface BeeComponentObjects<T> extends ComponentObject<T>{
+interface BeeComponentObjects<args> extends ComponentObject<args>{
   //new (args: T)
 }
