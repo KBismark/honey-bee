@@ -44,7 +44,7 @@ class ComponentClass {
       case 'class':
         fn = new fn();
       case 'object':
-        this.proto = fn;
+        this.tempProto = fn;
         this.isIndependent = !!fn.isIndependent;
         fn.keepStateIfDestroyed = keepStateIfDestroyed;
         fn.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
@@ -61,6 +61,7 @@ class ComponentClass {
   fn?: Function;
   id: number = 0;
   proto: any;
+  tempProto: any;
   html: any;
   setAttr: any;
   deps: any;
@@ -78,13 +79,16 @@ class ComponentClass {
     this.html = htmlMethod;
     this.setAttr = setter;
     this.dynMethod = dynMethod;
-    if (!this.proto) {
+    if (!this.tempProto) {
       // Set the prototype object that is inherited by all instances of the component class
       this.proto = proto;
       this.isIndependent = !!proto.isIndependent;
       proto.keepStateIfDestroyed = keepStateIfDestroyed;
       proto.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
       proto.isIndependent = isIndependent;
+    } else {
+      this.proto = this.tempProto;
+      this.tempProto = undefined;
     }
     
   }

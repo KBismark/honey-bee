@@ -60,7 +60,7 @@ class Bee {
       return independent; // Independent component prevents further rendering
     }
     const node = compClass.getTemplate();
-    comp = Object.create(comp);
+    comp = Object.create(compClass.proto);
     comp[internal] = _internal_;
     comp.initArgs = _internal_.InitArgs || comp.initArgs;
     _internal_.InitArgs = undefined;
