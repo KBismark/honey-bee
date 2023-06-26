@@ -1,3 +1,3 @@
 const HoneyBee = B = new Bee();
-export const BeeComponentObject =  ComponentObject;
+export const BeeComponentObject = BeeComponentObjects;
 export default HoneyBee;

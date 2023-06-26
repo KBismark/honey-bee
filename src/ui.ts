@@ -45,7 +45,7 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-   CreateComponentFromObject<args,InitArgs>(this:UI, name: string,obj:ComponentObject<args>): BeeComponentClass<args,InitArgs>{
+   CreateComponentFromObject<args,InitArgs>(this:UI, name: string,obj:BeeComponentObjects<args>): BeeComponentClass<args,InitArgs>{
      const cm = new ComponentClass(obj,'object');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
@@ -467,8 +467,9 @@ class ComponentObject<args>{
   declare public?:(this: this&Insiders, ...args: [args,this['state']])=> PossibleValues;
 }
 
-
-
-interface BeeComponentObjects<args> extends ComponentObject<args>{
-  //new (args: T)
+/**
+ * Extends the component object for classes and objects passed to `UI.CreateComponent`
+ */
+class BeeComponentObjects<args> extends ComponentObject<args>{
+  declare view:(this: this, args: args)=> any;
 }

@@ -49,8 +49,8 @@ class ComponentClass {
         fn.keepStateIfDestroyed = keepStateIfDestroyed;
         fn.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
         fn.isIndependent = isIndependent;
-        this.fn = fn.render;
-        fn.render = undefined;
+        this.fn = fn.view;
+        fn.view = undefined;
         break;
     }
     
