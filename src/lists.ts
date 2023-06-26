@@ -24,10 +24,10 @@ class List {
     },
     runner: { fn: undefined, data: undefined },
   };
-  map<L=any,K=any, T=any>(data: T, fn?: (listItem: any, index: number, data: T, This: L) => void, thisArg?: K): this {
+  map<L=any,K=any, T=any>(data: T, fn?: (this:K,listItem: any, index: number, data: T, This: L) => void, thisArg?: K): this {
     if (fn) {
       const _internal_ = this[internal];
-      _internal_.runner.fn = fn.bind(thisArg || null);
+      _internal_.runner.fn = fn.bind(thisArg as any);
       _internal_.runner.data = data;
     }
     return this;
@@ -75,7 +75,7 @@ class List {
     }
     _internal_.length = l + t;
     if (controller) {
-      controller.handler = controller.handler.bind(thisArg || null);
+      controller.handler = controller.handler.bind(thisArg as any);
     }
     _internal_.stack.push({ type: 'insert', value: value, before: bf, args: controller });
     listUpdates.set(_internal_.id, _internal_);
