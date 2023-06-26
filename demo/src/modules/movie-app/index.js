@@ -9,34 +9,39 @@ const pagelocker = {};
 // Lock app creation before exporting
 UI.lockPageCreation(pagelocker);
 
-const Movies = UI.CreateComponent('movie', function ({ title, poster_path, vote_average, overview }) {
-  this.onCreation = function (args) {
+// Creates Movies component class using object
+const Movies = UI.CreateComponentFromObject('movie',
+  {
+  onCreation(args) {
     this.movieData = args;
-  }
-  this.onMount = function () {
+  },
+  onMount() {
     this.movieData = undefined;
-  }
-  this.getClass = function () {
+  },
+  getClass() {
     return this.movieData.vote_average>=8?'green':this.movieData.vote_average>=5?'orange':'red'
-  }
-  this.data = {
+  },
+  data : {
     IMG_PATH: 'https://image.tmdb.org/t/p/w1280'
-  };
-  return (
-    <view>
-      <div class="movie">
-        <img $src={{value:this.data.IMG_PATH + this.movieData.poster_path,$dep:[]}} $alt={{value:this.movieData.title,$dep:[]}} />
-        <div class="movie-info">
-          <h3><>{args.title}</></h3>
-          <span $class={{value:this.getClass(),$dep:[]}}> <>{args.vote_average}</> </span>
+  },
+  view(args) {
+    return (
+      <view>
+        <div class="movie">
+          <img $src={{ value: this.data.IMG_PATH + this.movieData.poster_path, $dep: [] }} $alt={{ value: this.movieData.title, $dep: [] }} />
+          <div class="movie-info">
+            <h3><>{args.title}</></h3>
+            <span $class={{ value: this.getClass(), $dep: [] }}> <>{args.vote_average}</> </span>
+          </div>
+          <div class="overview">
+            <h3>Overview</h3>
+            <>{args.overview}</>
+          </div>
         </div>
-        <div class="overview">
-          <h3>Overview</h3>
-          <>{args.overview}</>
-        </div>
-      </div>
-    </view>
-  )
+      </view>
+    );
+  }
+ 
 });
 
 const PageInstance = UI.CreateComponent('page', function () {
