@@ -576,15 +576,32 @@ function buildServerString(node,tilt) {
        var styleString = node.attr.style;
        node.attr.style = `${styleString}`;
      }
+     if (!isDynamic) {
+      node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
+      var classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
+        node.attr.class = `${classString}`;
+    } else {
+      node.attr.Class = node.attr.class;
+      node.attr.class = '';
+      delete node.attr.class;
+      itemIndex = atrris.indexOf("class");
+      atrris[itemIndex] = 'Class';
+    }
      let length;
      if (typeof node.attr.class == "string" && (length = node.attr.class.length) > 3) {
-       if (node.attr.class.startsWith('"')) {
-        node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
+       var classString='';
+       const isDynamic = node.attr.class.startsWith("{") && node.attr.class.endsWith("}");
+       if (!isDynamic) {
+        if (node.attr.class.startsWith('"')) {
+          node.attr.class = node.attr.class.slice(1).split('"')[0].trim();
+        } else {
+          node.attr.class = node.attr.class.trim();
+        }
+        classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
        } else {
-        node.attr.class = node.attr.class.trim()
+         node.attr.Class = node.attr.class;
        }
        
-       var classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
        node.attr.class = `${classString}${node.head?`\${Component.isIndependent?\` bee-\${Component.parentId}\`:''}`:''}`;
      } else {
        if (!node.head) {
@@ -596,6 +613,16 @@ function buildServerString(node,tilt) {
        
      }
      
+     if (node.attr.Class) {
+      node.attr.Class = node.attr.Class.replace("{", "").replace(/}$/, "");
+       node.attr.class = (node.attr.class || "") + " ${" + node.attr.Class + "}"
+       delete node.attr.Class;
+     }
+     if (node.attr.Style) {
+      node.attr.Style = node.attr.Style.replace("{", "").replace(/}$/, "");
+       node.attr.style = (node.attr.style || "") + ";${" + node.attr.Style + "}"
+       delete node.attr.Style;
+     }
      if (node.attr.$class) {
       node.attr.$class = node.attr.$class.replace("{", "").replace(/}$/, "");
        node.attr.class = (node.attr.class || "") + " ${" + node.attr.$class + ".value}"
@@ -615,8 +642,9 @@ function buildServerString(node,tilt) {
          if (v.startsWith("{") && v.endsWith("}")) {
            v = v.replace("{", "").replace(/}$/, "");
            if (/on[A-Z]\S+/.test(k)) {
-            k = k.replace(/on/, "");
-             k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
+             k = k.replace(/on/, "");
+             k = k.toLowerCase();
+             //k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
              if (k == "load") {
                
              } else {
@@ -630,7 +658,8 @@ function buildServerString(node,tilt) {
                k = k.replace("$", "");
                v = v+".value"
              }
-            
+             k = k.charAt(0).toLowerCase() + k.slice(1);
+             k = k.replace(/[A-Z]/g, '-\\$&').toLowerCase();
              nodeString = nodeString.replace(
                `${attr_Rep}`,
                ` ${k}="\${${v}}"${attr_Rep}`
@@ -638,15 +667,20 @@ function buildServerString(node,tilt) {
              
            }
          } else {
+          k = k.charAt(0).toLowerCase() + k.slice(1);
+          k = k.replace(/[A-Z]/g, '-\\$&').toLowerCase();
           nodeString = nodeString.replace(
             `${attr_Rep}`,
             ` ${k}=${["class","style"].includes(k)?`"${v}"`:v}${attr_Rep}`
           );
         }
-       }else {
+       } else {
+         k = atrris[i];
+        k = k.charAt(0).toLowerCase() + k.slice(1);
+        k = k.replace(/[A-Z]/g, '-\\$&').toLowerCase();
         nodeString = nodeString.replace(
           `${attr_Rep}`,
-          ` ${atrris[i]}${attr_Rep}`
+          ` ${k}${attr_Rep}`
         );
       }
      }
