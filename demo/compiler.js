@@ -576,17 +576,6 @@ function buildServerString(node,tilt) {
        var styleString = node.attr.style;
        node.attr.style = `${styleString}`;
      }
-     if (!isDynamic) {
-      node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
-      var classString = Array.from(new Set(node.attr.class.split(" "))).join(" ");
-        node.attr.class = `${classString}`;
-    } else {
-      node.attr.Class = node.attr.class;
-      node.attr.class = '';
-      delete node.attr.class;
-      itemIndex = atrris.indexOf("class");
-      atrris[itemIndex] = 'Class';
-    }
      let length;
      if (typeof node.attr.class == "string" && (length = node.attr.class.length) > 3) {
        var classString='';
