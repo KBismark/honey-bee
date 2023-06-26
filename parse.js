@@ -9,7 +9,7 @@ const outputFile = path.join(__dirname, '/lib/index.js.min.js');
 const sourceMapFile = path.join(__dirname, '/lib/index.js.map');
 
 // Makes compatible with `import-for-web` usage.
-const pathname = `/modules/honey-bee@${packageJSON.version}`;
+const pathname = `/modules/honeybee-client@${packageJSON.version}`;
 
 // Import-for-web server map configuration
 const I4W_MAP = `

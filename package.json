@@ -1,5 +1,5 @@
 {
-  "name": "honey-bee",
+  "name": "honeybee-client",
   "version": "0.0.1",
   "description": "A declarative and reactive library for creating both static pages, multi-page and single page applications.",
   "main": "lib/index.js",
