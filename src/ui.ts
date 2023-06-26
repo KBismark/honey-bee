@@ -233,7 +233,7 @@ class UI {
   renderNewPage(this:UI, pagePath: string, ins: BeeComponentInstanceObject<any>|BeeComponentClass<any,any>, popstate?: unknown) {
     if (!PAGES[pagePath]) {
       if (typeof ins == 'function') {
-        ins = ins.instance()[0];
+        ins = ins.instance();
       }
       const id = ins[internal_ins].id;
       PAGES[pagePath] = id;

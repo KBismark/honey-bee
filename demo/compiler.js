@@ -442,8 +442,7 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                 nkf = true;
                 attrSetter.keys = `${attrSetter.keys}${keyname}:{node:${m},`
               }
-              k = k.replace(/^(on)/, "");
-              k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
+              k = k.replace(/on/, "").toLowerCase();
               evc = `${evc}${k}:$${m},`
               ev = `${ev}${k}:${v},`
               attrSetter.attr =
@@ -458,8 +457,7 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                   attrSetter.keys = `${attrSetter.keys}${keyname}:{node:${m},`
                 }
                 if (/^(on)[A-Z]\S+/.test(k)) {//Events
-                  k = k.replace(/on/, "");
-                  k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
+                  k = k.replace(/on/, "").toLowerCase();
                   evc = `${evc}${k}:$${m},`
                   ev = `${ev}${k}:function(e,t){let state=t.state;let a=${v};(a=a.value)&&a.apply(this,[e,t])},`
                   attrSetter.attr =
@@ -472,12 +470,14 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                   //   `if(set){fn.set(a.$dep||[])}},`
                   //attrSetter.nonKeyed++;
                 } else {
+                  let settableK = k = k.charAt(0).toLowerCase() + k.slice(1);
+                  settableK = settableK.replace(/[A-Z]/g, '-\\$&').toLowerCase();
                   let sep = { class: " ", style: ';' }
                   let key = keyname;//.split('"');
                  // key = key.slice(1, key.length - 1).join('"');
                   attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
                   attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
-                    `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${k}',\`${node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a.value}\`);` +
+                    `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a.value}\`);` +
                     `if(set){fn.key=nme;fn.$dep=a.$dep||[]}},`
                   if (["style", "class"].includes(k)) {
                     node.attr[k] = undefined;
@@ -485,26 +485,16 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
                   }
                 }
               } else {
-                k=k.charAt(0).toLowerCase()+k.replace(/^./, "");
-                // switch (k) {
-                //   case "class":
-                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('class',\`\${(${m}.getAttribute('class')||'')} \${${v}}\`)`;
-                //     break;
-                //   case "style":
-                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('style',\`\${(${m}.getAttribute('style')||'')};\${${v}}\`)`;
-                //     break;
-                //   default:
-                //     attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('${k}',${v})`;
-                //     break;
-                // }
-                
-                let sep = { class: " ", style: ';' }
+                let settableK = k = k.charAt(0).toLowerCase() + k.slice(1);
+                settableK = settableK.replace(/[A-Z]/g, '-\\$&').toLowerCase();
                 const isCS = ["style", "class"].includes(k);
-                  let key = keyname;
+                let sep = { class: " ", style: ';' }
+                let key = keyname;//.split('"');
+               // key = key.slice(1, key.length - 1).join('"');
                 attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
                 attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
-                  `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${k}',\`${isCS&&node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a}\`);` +
-                  `if(set){fn.key=nme;fn.$dep=[]}},`;
+                  `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${isCS&&node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a}\`);` +
+                  `if(set){fn.key=nme;fn.$dep=[]}},`
                 if (isCS) {
                   node.attr[k] = undefined;
                   delete node.attr[k];
@@ -514,17 +504,23 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
             }
           } else {
             if (!["style", "class"].includes(k)) {
+              let atrrkey = atrris[i];
+              let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
+              settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
               nodeString = nodeString.replace(
                 `${attr_Rep}`,
-                ` ${atrris[i]}=${node.attr[atrris[i]]}${attr_Rep}`
+                ` ${settableKey}=${node.attr[atrrkey]}${attr_Rep}`
               );
             }
           }
           
         } else {
+          let atrrkey = atrris[i];
+          let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
+          settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
           nodeString = nodeString.replace(
             `${attr_Rep}`,
-            ` ${atrris[i]}${attr_Rep}`
+            ` ${settableKey}${attr_Rep}`
           );
         }
       }
