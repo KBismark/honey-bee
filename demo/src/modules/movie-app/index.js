@@ -1,6 +1,6 @@
 //<@imports>
 
-import HoneyBee from '../../../../lib/index'; // Uncomment this line to enable code completion
+//import HoneyBee from '../../../../lib/index'; // Uncomment this line to enable code completion
 
 //</>
 
@@ -28,10 +28,10 @@ const Movies = UI.CreateComponentFromObject('movie',
     return (
       <view>
         <div class="movie">
-          <img $src={{ value: this.data.IMG_PATH + this.movieData.poster_path, $dep: [] }} $alt={{ value: this.movieData.title, $dep: [] }} />
+          <img src={this.data.IMG_PATH + this.movieData.poster_path} alt={this.movieData.title} />
           <div class="movie-info">
             <h3><>{args.title}</></h3>
-            <span $class={{ value: this.getClass(), $dep: [] }}> <>{args.vote_average}</> </span>
+            <span class={this.getClass()}> <>{args.vote_average}</> </span>
           </div>
           <div class="overview">
             <h3>Overview</h3>

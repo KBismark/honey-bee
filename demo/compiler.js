@@ -332,13 +332,16 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
         node.attr.style = `${styleString}`;
       } else {
         node.attr.Style = node.attr.style;
+        node.attr.style = '';
         delete node.attr.style;
+        atrris[itemIndex] = 'Style';
       }
       
     }
 
     let length;
     if (typeof node.attr.class == "string" && (length = node.attr.class.length) > 3) {
+      
       const isDynamic = node.attr.class.startsWith("{")&&node.attr.class.endsWith("}")
       if (!isDynamic) {
         node.attr.class = node.attr.class.slice(1).split('"')[0].trim()
@@ -346,7 +349,10 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
           node.attr.class = `${classString}`;
       } else {
         node.attr.Class = node.attr.class;
+        node.attr.class = '';
         delete node.attr.class;
+        itemIndex = atrris.indexOf("class");
+        atrris[itemIndex] = 'Class';
       }
     } else {
       node.attr.class = isKeyed ? { value: null } : "";
@@ -354,218 +360,130 @@ function buildString(node, isSVGNamespaceElement, depth, kNdN, eBase, attrSetter
     }
     
     let ev = "$events:{", evc = "evc:{",nkf=false,m;
-    if (0&&isKeyed) {
-      let k, v, kf = false;
-      m = `_${eBase.getUniqueVar()}`
-      attrSetter.attr = `${attrSetter.attr}\nlet ${m}=${getNode(depth)},$${m};`;
-      attrSetter.keys = `${attrSetter.keys}${JSON.stringify(keyname)}:{node:${m},attr:{},style:{},class:"",`;
-      nkf = true;
-      //attrSetter.keys = `${attrSetter.keys}${JSON.stringify(keyname)}:${m},`
-      for (i = 0; i < atrris.length; i++) {
-        k = atrris[i];
+    
+    keyname = JSON.stringify(isKeyed ? keyname : ++attrSetter.nonKeyed);
+    let k, v, kf = false;
+    // attrSetter.attr = `${attrSetter.attr}\n${m}=${getNode(depth)};`;
+    for (i = 0; i < atrris.length; i++) {
+      k = atrris[i];
+      
+      if (typeof node.attr[k] == "string") {
         v = node.attr[k] = node.attr[k].replace(/(">)$/,'"');
-        if (typeof  v== "string") {
-          if (v.startsWith("{") && v.endsWith("}")) {
-            if (!kf) {
-              kf = true;
-              //m = `_${eBase.getUniqueVar()}`
-              //attrSetter.keys = `${attrSetter.keys}${JSON.stringify(keyname)}:{node:${m},attr:{},style:{},class:"",`
-              //attrSetter.attr = `${attrSetter.attr}\nlet ${m}=${getNode(depth)},$${m};`;
-            }
-            v = v.replace("{", "").replace(/}$/, "");
-            if (/on[A-Z]\S+/.test(k)) {//Events
-              k = k.replace(/^(on)/, "");
-              k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
-              evc = `${evc}${k}:$${m},`
-              ev = `${ev}${k}:${v},`
-              attrSetter.attr =
-                `${attrSetter.attr}\n$${m}=_$ev.bind({key:'${keyname}',ev:'${k}',id:_$id})
-              ${m}.addEventListener('${k}',$${m},false)`;
-              
-            } else {
-              k = k.charAt(0).toLowerCase() + k.replace(/^./, "");
-              switch (k) {
-                case "class":
-                  attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('class',\`\${(${m}.getAttribute('class')|'')} \${${v}}\`)`;
-                  break;
-                case "style":
-                  attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('style',\`\${(${m}.getAttribute('style')|'')};\${${v}}\`)`;
-                  break;
-                default:
-                  attrSetter.attr = `${attrSetter.attr}\n${m}.setAttribute('${k}',${v})`;
-                  break;
-              }
-            }
-          } else {
-            nodeString = nodeString.replace(
-              `${attr_Rep}`,
-              ` ${atrris[i]}=${node.attr[atrris[i]]}${attr_Rep}`
-            );
+        if (v.startsWith("{") && v.endsWith("}")) {
+          if (!kf) {
+            kf = true;
+            m = `_${eBase.getUniqueVar()}`
+            attrSetter.attr = `${attrSetter.attr}\nlet ${m}=${getNode(depth)},$${m};`;
           }
-        } else {
-          nodeString = nodeString.replace(
-            `${attr_Rep}`,
-            ` ${atrris[i]}${attr_Rep}`
-          );
-        }
-        switch (atrris[i].toLowerCase()) {
-          case "class":
-          case "style":
-          case "key":
-            break;
-
-          default:
-            htmlAttris = `${htmlAttris}${JSON.stringify(atrris[i])}:${
-              node.attr[atrris[i]]
-            },`;
-            break;
-        }
-      }
-    } else {
-      keyname = JSON.stringify(isKeyed ? keyname : attrSetter.nonKeyed);
-      let k, v, kf = false;
-     // attrSetter.attr = `${attrSetter.attr}\n${m}=${getNode(depth)};`;
-      for (i = 0; i < atrris.length; i++) {
-        k = atrris[i];
-       
-        if (typeof node.attr[k] == "string") {
-          v = node.attr[k] = node.attr[k].replace(/(">)$/,'"');
-          if (v.startsWith("{") && v.endsWith("}")) {
-            if (!kf) {
-              kf = true;
-              m = `_${eBase.getUniqueVar()}`
-              attrSetter.attr = `${attrSetter.attr}\nlet ${m}=${getNode(depth)},$${m};`;
+          v = v.replace("{", "").replace(/}$/, "");
+          if (/^(on)[A-Z]\S+/.test(k)) {//Events
+            if (!nkf) {
+              nkf = true;
+              attrSetter.keys = `${attrSetter.keys}${keyname}:{node:${m},`
             }
-            v = v.replace("{", "").replace(/}$/, "");
-            if (/^(on)[A-Z]\S+/.test(k)) {//Events
+            k = k.replace(/on/, "").toLowerCase();
+            evc = `${evc}${k}:$${m},`
+            ev = `${ev}${k}:${v},`
+            attrSetter.attr =
+              `${attrSetter.attr}\n$${m}=_$ev.bind({key:${keyname},ev:'${k}',id:_$id})
+            ${m}.addEventListener('${k}',$${m},false)`;
+            //attrSetter.nonKeyed++;
+          } else {
+            if (k.startsWith("$")) {//Has dependencies
+              k = k.replace(/^./, "");
               if (!nkf) {
                 nkf = true;
                 attrSetter.keys = `${attrSetter.keys}${keyname}:{node:${m},`
               }
-              k = k.replace(/on/, "").toLowerCase();
-              evc = `${evc}${k}:$${m},`
-              ev = `${ev}${k}:${v},`
-              attrSetter.attr =
-                `${attrSetter.attr}\n$${m}=_$ev.bind({key:${keyname},ev:'${k}',id:_$id})
-              ${m}.addEventListener('${k}',$${m},false)`;
-              //attrSetter.nonKeyed++;
-            } else {
-              if (k.startsWith("$")) {//Has dependencies
-                k = k.replace(/^./, "");
-                if (!nkf) {
-                  nkf = true;
-                  attrSetter.keys = `${attrSetter.keys}${keyname}:{node:${m},`
-                }
-                if (/^(on)[A-Z]\S+/.test(k)) {//Events
-                  k = k.replace(/on/, "").toLowerCase();
-                  evc = `${evc}${k}:$${m},`
-                  ev = `${ev}${k}:function(e,t){let state=t.state;let a=${v};(a=a.value)&&a.apply(this,[e,t])},`
-                  attrSetter.attr =
-                    `${attrSetter.attr}\n$${m}=_$ev.bind({key:${keyname},ev:'${k}',id:_$id})
-                  ${m}.addEventListener('${k}',$${m},false);`;
+              if (/^(on)[A-Z]\S+/.test(k)) {//Events
+                k = k.replace(/on/, "").toLowerCase();
+                evc = `${evc}${k}:$${m},`
+                ev = `${ev}${k}:function(e,t){let state=t.state;let a=${v};(a=a.value)&&a.apply(this,[e,t])},`
+                attrSetter.attr =
+                  `${attrSetter.attr}\n$${m}=_$ev.bind({key:${keyname},ev:'${k}',id:_$id})
+                ${m}.addEventListener('${k}',$${m},false);`;
 
-                  //attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${attrSetter.nonKeyed}${i}'];_$fn.apply(this,[${m},this.state,_$set,_$fn])`;
-                  // attrSetter.depAttr = `${attrSetter.depAttr}'${attrSetter.nonKeyed}${i}':` +
-                  //   `function(el,state,$in,set,fn){let a=${v};this[$in].keyed['${attrSetter.nonKeyed}']['${k}'] = a.value;` +
-                  //   `if(set){fn.set(a.$dep||[])}},`
-                  //attrSetter.nonKeyed++;
-                } else {
-                  let settableK = k = k.charAt(0).toLowerCase() + k.slice(1);
-                  settableK = settableK.replace(/[A-Z]/g, '-\\$&').toLowerCase();
-                  let sep = { class: " ", style: ';' }
-                  let key = keyname;//.split('"');
-                 // key = key.slice(1, key.length - 1).join('"');
-                  attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
-                  attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
-                    `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a.value}\`);` +
-                    `if(set){fn.key=nme;fn.$dep=a.$dep||[]}},`
-                  if (["style", "class"].includes(k)) {
-                    node.attr[k] = undefined;
-                    delete node.attr[k];
-                  }
-                }
+                //attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${attrSetter.nonKeyed}${i}'];_$fn.apply(this,[${m},this.state,_$set,_$fn])`;
+                // attrSetter.depAttr = `${attrSetter.depAttr}'${attrSetter.nonKeyed}${i}':` +
+                //   `function(el,state,$in,set,fn){let a=${v};this[$in].keyed['${attrSetter.nonKeyed}']['${k}'] = a.value;` +
+                //   `if(set){fn.set(a.$dep||[])}},`
+                //attrSetter.nonKeyed++;
               } else {
                 let settableK = k = k.charAt(0).toLowerCase() + k.slice(1);
                 settableK = settableK.replace(/[A-Z]/g, '-\\$&').toLowerCase();
-                const isCS = ["style", "class"].includes(k);
                 let sep = { class: " ", style: ';' }
                 let key = keyname;//.split('"');
-               // key = key.slice(1, key.length - 1).join('"');
+                // key = key.slice(1, key.length - 1).join('"');
                 attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
                 attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
-                  `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${isCS&&node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a}\`);` +
-                  `if(set){fn.key=nme;fn.$dep=[]}},`
-                if (isCS) {
+                  `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a.value}\`);` +
+                  `if(set){fn.key=nme;fn.$dep=a.$dep||[]}},`
+                if (["style", "class"].includes(k)) {
                   node.attr[k] = undefined;
                   delete node.attr[k];
                 }
               }
-              
+            } else {
+              let settableK = k = k.charAt(0).toLowerCase() + k.slice(1);
+              settableK = settableK.replace(/[A-Z]/g, '-\\$&').toLowerCase();
+              const isCS = ["style", "class"].includes(k);
+              let sep = { class: " ", style: ';' }
+              let key = keyname;//.split('"');
+              // key = key.slice(1, key.length - 1).join('"');
+              attrSetter.attr = `${attrSetter.attr}\n_$fn=_$dp['${key}${i}'];_$fn.apply(this,[${m},state,_$set,_$fn,${keyname}])`;
+              attrSetter.depAttr = `${attrSetter.depAttr}'${key}${i}':` +
+                `function(el,state,set,fn,nme){let a=${v};el.setAttribute('${settableK}',\`${isCS&&node.attr[k] ? node.attr[k] + `${sep[k] || ''}` : ''}\${a}\`);` +
+                `if(set){fn.key=nme;fn.$dep=[]}},`
+              if (isCS) {
+                node.attr[k] = undefined;
+                delete node.attr[k];
+              }
             }
-          } else {
-            if (!["style", "class"].includes(k)) {
-              let atrrkey = atrris[i];
-              let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
-              settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
-              nodeString = nodeString.replace(
-                `${attr_Rep}`,
-                ` ${settableKey}=${node.attr[atrrkey]}${attr_Rep}`
-              );
-            }
+            
           }
-          
         } else {
-          let atrrkey = atrris[i];
-          let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
-          settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
-          nodeString = nodeString.replace(
-            `${attr_Rep}`,
-            ` ${settableKey}${attr_Rep}`
-          );
+          if (!["style", "class"].includes(k)) {
+            let atrrkey = atrris[i];
+            let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
+            settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
+            nodeString = nodeString.replace(
+              `${attr_Rep}`,
+              ` ${settableKey}=${node.attr[atrrkey]}${attr_Rep}`
+            );
+          }
         }
-      }
-      if (node.attr.style) {
+        
+      } else {
+        let atrrkey = atrris[i];
+        let settableKey = atrrkey.charAt(0).toLowerCase() + atrrkey.slice(1);
+        settableKey = settableKey.replace(/[A-Z]/g, '-\\$&').toLowerCase();
         nodeString = nodeString.replace(
           `${attr_Rep}`,
-          ` style="${node.attr.style}"${attr_Rep}`
-        );
-      }
-      if (node.attr.class) {
-        nodeString = nodeString.replace(
-          `${attr_Rep}`,
-          ` class="${node.attr.class}"${attr_Rep}`
+          ` ${settableKey}${attr_Rep}`
         );
       }
     }
+    if (node.attr.style) {
+      nodeString = nodeString.replace(
+        `${attr_Rep}`,
+        ` style="${node.attr.style}"${attr_Rep}`
+      );
+    }
+    if (node.attr.class) {
+      nodeString = nodeString.replace(
+        `${attr_Rep}`,
+        ` class="${node.attr.class}"${attr_Rep}`
+      );
+    }
+    
     if (nkf) {
       attrSetter.keys = `${attrSetter.keys}${ev}},${evc}}},`;
-      attrSetter.nonKeyed++;
+      //attrSetter.nonKeyed++;
     }
   }
   htmlAttris += "}";
-
   nodeString = nodeString.replace(`${attr_Rep}`, "");
-  if (isKeyed) {
-    // kNdN.KN[keyname] = {
-    //   position: depth,
-    //   styleValue: stylesObject,
-    //   classNames: classObject,
-    // };
-    // node.attr.key = null;
-    // node.attr.class = null;
-    // node.attr.style = null;
-    // delete node.attr.key;
-    // delete node.attr.class;
-    // delete node.attr.style;
-    // kNdN.KN[keyname].htmlAttributes = node.attr;
-    // kNdN.KN = `${kNdN.KN}${JSON.stringify(keyname)}:{position:${JSON.stringify(
-    //   depth
-    // )},styleValue:${JSON.stringify(stylesObject)},classNames:${JSON.stringify(
-    //   classObject
-    // )},htmlAttributes:${htmlAttris}},`;
-  }
 
-  //attrSetter.keys = `${attrSetter.keys}`;
   if (node.children.length > 0) {
     ch = true;
     let ch_l = node.children.length ,m;
