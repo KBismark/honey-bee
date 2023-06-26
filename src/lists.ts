@@ -24,7 +24,7 @@ class List {
     },
     runner: { fn: undefined, data: undefined },
   };
-  map<T>(data: T, fn?: (listItem: any, index: number, data: T, args: any, This: any) => any, thisArg?: any): this {
+  map<L=any,K=any, T=any>(data: T, fn?: (listItem: any, index: number, data: T, This: L) => void, thisArg?: K): this {
     if (fn) {
       const _internal_ = this[internal];
       _internal_.runner.fn = fn.bind(thisArg || null);
@@ -33,8 +33,7 @@ class List {
     return this;
   }
   clear() {
-    const _internal_ = this[internal];
-    //  _internal_.nextData = [];
+    this.remove(0);
   }
   get() {
     return this[internal].curData.slice(0);
@@ -53,11 +52,11 @@ class List {
     listUpdates.set(_internal_.id, _internal_);
     startUpdates();
   }
-  insertBefore<T, U = string | number | boolean | BeeComponentInstanceObject<any>>(
+  insertBefore<L=any,T=any,K=any, U = string | number | boolean | BeeComponentInstanceObject<any>>(
     index: number,
     list: U | Array<U>,
-    controller?: { data: T; handler: (listItem: U, index: number, data: T, args: any, This: any) => void },
-    thisArg?: any,
+    controller?: { data: T; handler: (this:K, listItem: U, index: number, data: T, This: L) => void },
+    thisArg?: K,
   ) {
     const _internal_ = this[internal];
     let l = _internal_.length,

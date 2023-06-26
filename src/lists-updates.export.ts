@@ -148,8 +148,9 @@ function updateListData(list: ListInternal) {
   t = d.fn;
   if (t && (b = list.curData) && (l = b.length)) {
     data = d.data;
+    let comp = Blocks.get(list.pos.parent);
     for (i = 0; i < l; i++) {
-      t(b[i], i, data);
+      t(b[i], i, data,comp);
     }
   }
   d.fn = d.data = undefined;

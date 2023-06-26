@@ -16,6 +16,7 @@ function updateList(list: any, parentData: any, node: any) {
       handler,
       getList_1 = list.getList;
     let chain = renderingComponent.chain;
+    const comp = Blocks.get(list.pos.parent);
     for (i = 0; i < l; i++) {
       item = stack[i];
       d = data.length;
@@ -178,7 +179,7 @@ function updateList(list: any, parentData: any, node: any) {
             argsData = args.data;
             handler = args.handler;
             for (j = 0; j < t; j++) {
-              handler(b[j], j, argsData);
+              handler(b[j], j, argsData,comp);
             }
           }
           tmp = buildListNodes(b, pid, pidx, getList_1);
@@ -226,7 +227,7 @@ function updateList(list: any, parentData: any, node: any) {
     if (t && (b = list.curData) && (l = b.length)) {
       data = d.data;
       for (i = 0; i < l; i++) {
-        t(b[i], i, data);
+        t(b[i], i, data,comp);
       }
     }
     d.fn = d.data = undefined;
@@ -238,9 +239,10 @@ function updateList(list: any, parentData: any, node: any) {
     d = list.runner;
     t = d.fn;
     if (t && (b = list.curData) && (l = b.length)) {
+      let comp = Blocks.get(list.pos.parent);
       data = d.data;
       for (i = 0; i < l; i++) {
-        t(b[i], i, data);
+        t(b[i], i, data,comp);
       }
     }
     d.fn = d.data = undefined;

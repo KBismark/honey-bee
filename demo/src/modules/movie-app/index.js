@@ -1,6 +1,6 @@
 //<@imports>
 
-//import HoneyBee from '../../../../lib/index'; // Uncomment this line to enable code completion
+import HoneyBee from '../../../../lib/index'; // Uncomment this line to enable code completion
 
 //</>
 
