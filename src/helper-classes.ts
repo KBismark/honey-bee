@@ -33,19 +33,23 @@ function isIndependent(this:any) {
 }
 
 /**
- * 
+ * The base of all component classes
  */
 class ComponentClass {
   constructor(fn: any, type: 'object' | 'class' | 'function') {
     switch (type) {
+      // A component class may be created from a function
       case 'function':
         this.fn = fn;
         break;
+      // A component class may be created from a class
       case 'class':
         fn = new fn();
+        // A component class may be created from an object
       case 'object':
         this.tempProto = fn;
         this.isIndependent = !!fn.isIndependent;
+        // Set predefined methods on class' object
         fn.keepStateIfDestroyed = keepStateIfDestroyed;
         fn.keepEverythingIfDestroyed = keepEverythingIfDestroyed;
         fn.isIndependent = isIndependent;
@@ -92,6 +96,9 @@ class ComponentClass {
     }
     
   }
+  /**
+   * Returns a clone of the static view of th ecomponent's class
+   */
   getTemplate() {
     if (!this.template) {
       if (!global_template) {
@@ -99,12 +106,16 @@ class ComponentClass {
       }
       global_template.innerHTML = this.html();
       this.template = global_template.content.firstElementChild;
+      // This is temporarily kept during every render cycle and cleared right after
       TemplateBucket.set(this.id, this);
     }
     return this.template.cloneNode(true);
   }
 }
-
+/**
+ * The base of the internal object set on all component objects.
+ * It contains information on the component not accessible outside
+ */
 class ComponentInstance {
   constructor({ methodId, args, initArgs }: { methodId: number; args: any; initArgs?: any }) {
     this.id = ++componentsID;
