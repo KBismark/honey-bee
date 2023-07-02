@@ -59,12 +59,32 @@ let listCount = 0;
 // Stores current view node to cloned
 let global_template: any = undefined;
 // Component status
+// Components can be in four different status
+// That is, the life a component can be in only one of these status
 const STATUS = {
+  /**
+   * The component's view/UI is rendered and is currently attched to the DOM
+   */
   alive: 1,
+  /**
+   * - The component is detached from DOM. 
+   * - Event listeners are removed. 
+   * - Referenced nodes are destroyed.
+   * - Component's object is destroyed.
+   * - The state object persists (not destroyed)
+   */
   hibernatedPartially: 2,
+  /**
+   * The component's view/UI is detached from DOM but nothing related to the component is destroyed.
+   */
   hibernatedFully: 3,
+  /**
+   * The component is either not rendered or is totally destroyed and its instance object cannot bring it 
+   * back to life.
+   */
   dead: 4,
 };
+// Node types used in rendering methods
 const NODETYPES = {
   text: 1,
   component: 2,
@@ -107,6 +127,7 @@ const page_tracking: {
 let pagelock: symbol | {} = internal;
 let firstPageCreated = false;
 const pageopen = {};
+// Listens to the `popstate` events to render respective pages automatically
 window.addEventListener(
   'popstate',
   function PagePopState(e) {
