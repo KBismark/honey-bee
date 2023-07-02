@@ -1,11 +1,15 @@
 class Bee {
   UI: UI;
+  ComponentObject: typeof BeeComponentObjects;
+  ComponentInstanceObject: typeof BeeComponentInstanceObject;
   private isSelectiveRendering: boolean;
   private selector: any;
   private externalData: { data: { [k: string]: { data: any } } };
   private _imex: any;
   constructor() {
     this.UI = new UI();
+    this.ComponentObject = BeeComponentObjects;
+    this.ComponentInstanceObject = BeeComponentInstanceObject;
     this.isSelectiveRendering = false;
     this.selector = null;
     let _ext = {data:{}};

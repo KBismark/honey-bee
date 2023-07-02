@@ -252,7 +252,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getParentInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject<any> {
+  getParentInstance<U>(this:UI, This: ComponentObject<U>): Bee['ComponentInstanceObject'] {
     const parent = (This as any)[internal].outerValue[internal].parent;
     if (!parent) return null as any;
     return Blocks.get(parent)[internal].ins;
@@ -262,7 +262,7 @@ class UI {
    * @param This Provide the component's object: `this`
    *
    */
-  getInstance<U>(this:UI, This: ComponentObject<U>): BeeComponentInstanceObject<any> {
+  getInstance<U>(this:UI, This: ComponentObject<U>): Bee['ComponentInstanceObject'] {
     return (This as any)[internal].ins;
   }
   /**
@@ -376,13 +376,26 @@ type BeeComponentInstance<T,I> = {
    * The value can be accessed with `this.initArgs` in the `onCreation` method.
    *
    */
-  instance: (initArgs?: I) => BeeComponentInstanceObject<T>;
-    //BeeComponentInstanceObject;
+  instance: (initArgs?: I) => {
+    ArgumentType?: T;
+    [k: symbol]: { fnId: number; id: number; out?:{
+      [k: symbol]: {
+        node: HTMLElement | any;
+        [k: string]: any;
+      };
+    } };
+    readonly isComponent: true;
+  };
 };
-interface  BeeComponentInstanceObject<T>{
-  ArgumentType?: T;
-  [k: symbol]: { fnId: number; id: number; out?: BeeElement };
-  readonly isComponent: true;
+class  BeeComponentInstanceObject<T>{
+  declare ArgumentType?: T;
+  [k: symbol]: { fnId: number; id: number; out?:{
+    [k: symbol]: {
+      node: HTMLElement | any;
+      [k: string]: any;
+    };
+  } };
+  declare readonly isComponent: true;
 }
 
 type PossibleValues = { [k: string | symbol | number]: any };
@@ -471,5 +484,5 @@ class ComponentObject<args>{
  * Extends the component object for classes and objects passed to `UI.CreateComponent`
  */
 class BeeComponentObjects<args> extends ComponentObject<args>{
-  declare view:(this: this, args: args)=> any;
+  declare view:(this: this, args: args)=> JSX.Element;
 }
