@@ -25,7 +25,7 @@ class UI {
    * @param name A unique string to identify the component. The value must be unique throughout the current file
    * where `UI.CreateComponent` is called.
    *
-   * @param fn Provide the actual component, a function with only one argument as props to the component.
+   * @param cls Provide the actual component, a class with all properties and methods of the component.
    *
    */
    CreateComponentFromClass<args,InitArgs>(this:UI, name: string, cls: any): BeeComponentClass<args,InitArgs>{
@@ -42,7 +42,7 @@ class UI {
    * @param name A unique string to identify the component. The value must be unique throughout the current file
    * where `UI.CreateComponent` is called.
    *
-   * @param fn Provide the actual component, a function with only one argument as props to the component.
+   * @param fn Provide the actual component, an object with all properties and methods of the component.
    *
    */
    CreateComponentFromObject<args,InitArgs>(this:UI, name: string,obj:BeeComponentObjects<args>): BeeComponentClass<args,InitArgs>{
@@ -83,7 +83,7 @@ class UI {
    * Creates the first page.
    * @param pagePath A pathname for the page.   
    * 
-   * @param ins A component instance or a component to render as page. If a component instance is provided, 
+   * @param ins A component instance or a component's class to render as page. If a component instance is provided, 
    * it must be hibernated by calling either `this.keepStateIfDestroyed()` or `this.keepEverythingIfDestroyed()`
    * 
    *
@@ -101,7 +101,6 @@ class UI {
       firstPageCreated = true;
       if ((B as any).isSSR) {
         (B as any).isSSR = false;
-        // ins[internal_ins].out[internal].node = 8
         return;
       }
       page_tracking.clientRendered = true;
