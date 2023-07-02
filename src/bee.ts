@@ -1,10 +1,32 @@
+/**
+ * This is the main honeybee class
+ */
 class Bee {
+  // Holds a reference to the UI class
   UI: UI;
+  // Component objects inherits from this class
+  // Every component maintains its own state. The state object is a property of the
+  // component's object. Component objects also has predefined methods and properties
+  // of the component's class.
   ComponentObject: typeof BeeComponentObjects;
+  // Component instance objects inherits from this class
+  // An instance object is returned whenever you create a new component instance from
+  // a component class
   ComponentInstanceObject: typeof BeeComponentInstanceObject;
+  // Server side rendering comes with its own problems. 
+  // Hydration is done to bring interactivity to the application.
+  // WE DO NOT DO HYDRATION ON LOAD. WE HYDRATE ON DEMAND.
+  // When app is server rendered with the `honeybee-server`,
+  // value is set to true to allow hydrationon demand
   private isSelectiveRendering: boolean;
+  // Selector holds info on selected node/component to hydrate
   private selector: any;
+  // Raw data used in generating server side html code can be accesssed on client.
+  // We keep such data here
   private externalData: { data: { [k: string]: { data: any } } };
+  // Code modularization and access library reference
+  // Almost as a router but serves many purpose
+  // See the `import-for-web` library https:github.cpm/KBismark/import-for-web
   private _imex: any;
   constructor() {
     this.UI = new UI();
