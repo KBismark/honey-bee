@@ -12,7 +12,7 @@ class Bee {
   // Component instance objects inherits from this class
   // An instance object is returned whenever you create a new component instance from
   // a component class
-  ComponentInstanceObject: typeof BeeComponentInstanceObject;
+  ComponentInstanceObject: BeeComponentInstanceObject<any>;
   // Server side rendering comes with its own problems. 
   // Hydration is done to bring interactivity to the application.
   // WE DO NOT DO HYDRATION ON LOAD. WE HYDRATE ON DEMAND.
@@ -32,7 +32,7 @@ class Bee {
   constructor() {
     this.UI = new UI();
     this.ComponentObject = BeeComponentObjects;
-    this.ComponentInstanceObject = BeeComponentInstanceObject;
+    this.ComponentInstanceObject = new BeeComponentInstanceObject;
     this.isSelectiveRendering = false;
     this.selector = null;
     let _ext = {data:{}};

@@ -5,7 +5,7 @@
 
     declare global {
         namespace JSX {
-            type Element = ComponentNode;
+            type Element = {};
             interface IntrinsicElements {
                 view: ViewWrapperTag;
                 // HTML

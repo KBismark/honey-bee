@@ -272,6 +272,18 @@ class UI {
   getPublicData(this:UI, ins: BeeComponentInstanceObject<any>): PossibleValues {
     return Blocks.get(ins[internal_ins].id).public || {};
   }
+  /**
+   * Get a keyed node. This method would return the DOM node of the element with the keyed name `key`
+   * @param ins The component's instance object
+   * @param key The key value of the node to retrieve
+   */
+  getNode(this: UI, ins: BeeComponentInstanceObject<any>, key: string):HTMLElement|Node|null {
+    const id = ins[internal_ins].id;
+    const block = Blocks.get(id);
+    if (!block) return null;
+    const obj_node = block[internal].keyed[key];
+    return obj_node ? obj_node.node : null;
+  }
    /**
    * Get data from data source.
    * @param info Data source object
@@ -483,5 +495,6 @@ class ComponentObject<args>{
  * Extends the component object for classes and objects passed to `UI.CreateComponent`
  */
 class BeeComponentObjects<args> extends ComponentObject<args>{
-  declare view:(this: this, args: args)=> JSX.Element;
+  declare view: (this: this, args: args) => JSX.Element;
+  [k: string | symbol | number]: any
 }
