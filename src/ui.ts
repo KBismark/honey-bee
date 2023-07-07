@@ -11,56 +11,75 @@ import { runDynamicnodes, updateDynamicnodes } from "./render.export";
  * A class containing all methods and properties of the HoneyBee UI
  */
 export class UI {
-  constructor() { }
-  /**
-   *
-   * @param name A unique string to identify the component. The value must be unique throughout the current file
+ /**
+  * Creates a new component class and registers it with the UI, allowing
+  * it to be used in the application.
+  * @param {UI}  - - `UI` is the context of the function, indicating that it is a method of the
+  * `UI` class.
+  * @param {string} name - A unique string to identify the component. The value must be unique throughout the current file
    * where `UI.CreateComponent` is called.
-   *
-   * @param fn Provide the actual component, a function with only one argument as props to the component.
-   *
-   */
+  * @param fn - The `fn` parameter is a function that defines the behavior and rendering of the
+  * component. It takes only one argument as `args` to the component.
+  * @returns The function returns a `BeeComponentClass`.
+  */
   CreateComponent<args, state, InitArgs,ComponentMethodsAndProps = PossibleValues>(this: UI, name: string, fn: BeeComponentMethod<args, state, ComponentMethodsAndProps>): BeeComponentClass<args, InitArgs> {
+   // set up component class if it's the first time a component from this class is rendering.
     const cm = new ComponentClass(fn, 'function');
     CreatedComponents.set(cm.id, cm);
+    // For creating a new component instance by calling the returned class directly
     const f: any = ComponentMethod.bind({ fnId: cm.id });
+    // For creating a new component instance via the returned class' instance() method
     f.instance = getComponentInstance.bind({ fnId: cm.id });
+    // Set the name for the component class: <filename><unique_name>
     name = cm.Name = (B as any)._imex.getPath() + name;
+    // Map the instance method to the class' name
+    // This is neccessary for the on-demand or selective hydration process
     Namings[name] = f.instance;
     return f;
   }
+
+ 
   /**
-  *
+  * Creates a new component class and registers it with the UI, allowing
+  * it to be used in the application.
   * @param name A unique string to identify the component. The value must be unique throughout the current file
   * where `UI.CreateComponent` is called.
   *
-  * @param fn Provide the actual component, an object with all properties and methods of the component.
+  * @param obj The `obj` parameter is an object that defines the behavior and rendering of the
+  * component.
   *
   */
   CreateComponentFromObject<args, state, InitArgs, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>>
     (
       this: UI, name: string,
       obj: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
-    ): BeeComponentClass<args, InitArgs> {
+  ): BeeComponentClass<args, InitArgs> {
+    // set up component class if it's the first time a component from this class is rendering.
     const cm = new ComponentClass(obj, 'object');
     CreatedComponents.set(cm.id, cm);
+    // For creating a new component instance by calling the returned class directly
     const f: any = ComponentMethod.bind({ fnId: cm.id });
+    // For creating a new component instance via the returned class' instance() method
     f.instance = getComponentInstance.bind({ fnId: cm.id });
+    // Set the name for the component class: <filename><unique_name>
     name = cm.Name = (B as any)._imex.getPath() + name;
+    // Map the instance method to the class' name
+    // This is neccessary for the on-demand or selective hydration process
     Namings[name] = f.instance;
     return f;
   }
   /**
    *
    * @param fn A function that returns a value to be inserted into the DOM.
-   * @param stateDependencyKeys An array of state keys as a dependency to update dynamic node. An empty array
-   * prevents this node from being updated after first render.
+   * @param stateDependencyKeys AAn array of keys that represent the dependencies of the state object.
+   * These keys are used to track changes in the state object and trigger updates when any of the
+   * dependencies change. An empty array prevents this node from being updated after first render.
    *
    */
-  CreateDynamicNode(
+  CreateDynamicNode<state = PossibleValues>(
     this: UI,
-    fn: (this: PossibleValues & { state: PossibleValues }, state: PossibleValues) => any,
-    stateDependencyKeys: (keyof PossibleValues)[],
+    fn: <U>(this: U extends ComponentObjectValue<PossibleValues,ComponentObjectObjects<any, state, any>>?U: PossibleValues & { state: state }, state: state) => any,
+    stateDependencyKeys: Array<keyof state>,
   ) {
     if (typeof fn == 'function') {
       (fn as any)[_external] = stateDependencyKeys.slice(0);
@@ -84,6 +103,14 @@ export class UI {
    * 
    *
    */
+ /**
+  * `CreatePage` is responsible for creating a new page in the application, based
+  * on the provided page path and component instance or class.
+  * @param {string} pagePath - The `pagePath` parameter is a string that represents the path or URL of
+  * the page being created. It is used as a key to store the page ID in the `PAGES` object.
+  * @param {BeeComponentInstanceObject<any> | BeeComponentClass<any, any>} ins - The `ins` parameter is
+  * either an instance of a BeeComponentObject or a BeeComponentClass.
+  */
   CreatePage(this: UI, pagePath: string, ins: BeeComponentInstanceObject<any> | BeeComponentClass<any, any>) {
     if (!firstPageCreated && pagelock == pageopen) {
       if (typeof ins == 'function') {
@@ -145,78 +172,77 @@ export class UI {
     if ((B as any).isSSR) {
       return undefined as any;
     }
+    // grt id of the component to be rendered/updated
     const id = ins[internal_ins].id;
+    // Get the state object of the component to be rendered/updated
     const comp = Blocks.get(id);
     const _internal_ = comp[internal];
+    // Get the actual component class of the component to be rendered/updated
     const compClass = CreatedComponents.get(_internal_.fnId);
     let node = undefined; // listTrack;
     let out, el;
     _internal_.Args = args;
     switch (_internal_.status) {
+      // Component needs a full mount since it's status is `dead`
       case STATUS.dead: // Full Mount
+        // If the component class' is not set up, do so
         if (!compClass.proto) {
           node = compClass.fn.call(comp, args);
-        } else {
+        }
+        // if component class' is set up, we just clone a copy of the data
+        else {
           node = clone(_internal_);
         }
-
-        out = _internal_.outerValue;
-        out[internal].node = node;
+        // Set status to `alive`
         _internal_.status = (_internal_ as any).ins.status = STATUS.alive;
+        // if `node` is equal to `independent`, do not continue further execution.
+        // Component must not be affected with its parent render
         if (node == independent) {
           _internal_.init_dyn = null;
           return independent as any;
         }
+        out = _internal_.outerValue;
+        // keep a refernce to the component object
+        out[internal].node = node;
+        // Insert dynamic nodes into static nodes
         runDynamicnodes(_internal_.id, compClass.dn, _internal_.init_dyn);
         _internal_.init_dyn = null;
         return out;
+      // component only needs to be updated
       case STATUS.alive: // Update
+         // Component must not be affected with its parent render
         if (_internal_.independent) {
           return independent as any;
         }
-        el = _internal_.outerValue;
-        if (el.parent && (renderingComponent.id != el.parent || renderingComponent.dynIndex != el.dynIndex)) {
-          let tmp2 = Blocks.get(el.parent)[internal].dyn,
-            e,
-            j;
-          if (el.listItem) {
-            e = el.getList();
-            j = e.curData.indexOf(el);
-            e.curData[j] = '';
-            if (j == 0) {
-              el.node.replaceWith((e.pos.head = document.createTextNode('')));
-            } else if (j == e.curData.length - 1) {
-              el.node.replaceWith((e.pos.tail = document.createTextNode('')));
-            } else {
-              el.node.replaceWith(document.createTextNode(''));
-            }
-            el.listItem = false;
-            el.getList = undefined;
-          } else {
-            tmp2[(j = el.dynIndex)].node.replaceWith((e = document.createTextNode('')));
-            tmp2[j] = { node: e, type: NODETYPES.text, value: '' };
-          }
-          el.parent = 0;
-          el.dynIndex = 0;
-        }
+        removeFromListIfAny(el = _internal_.outerValue);
+        // Trigger on parentEffect event of the component
         comp.parentEffect && comp.parentEffect.call(comp, args, comp.state);
+        // Update affected nodes
         updateDynamicnodes(_internal_.id);
         return el;
+      // Component is partially hibernated
       case STATUS.hibernatedPartially:
+        // Clone the node and returned the preseverd state object
         node = cloneWithState(comp, _internal_);
         out = _internal_.outerValue;
         out[internal].node = node;
+        // Set component status
         _internal_.status = (_internal_ as any).ins.status = STATUS.alive;
+        // Insert dynamic nodes into static nodes
         runDynamicnodes(_internal_.id, compClass.dn, _internal_.init_dyn);
         _internal_.init_dyn = null;
         return out;
+         // Component is fully hibernated
       case STATUS.hibernatedFully:
         if (_internal_.independent) {
           _internal_.status = (_internal_ as any).ins.status = STATUS.alive;
           return independent as any;
         }
+        // Trigger on parentEffect event of the component
         comp.parentEffect && comp.parentEffect.call(comp, args, comp.state);
+         // Set component status
         _internal_.status = (_internal_ as any).ins.status = STATUS.alive;
+        // Update affected nodes
         updateDynamicnodes(_internal_.id);
         return _internal_.outerValue;
     }
@@ -352,6 +378,43 @@ export class UI {
     (B as any).externalData.data[info.url] = { data: info.data };
   }
 }
+/**
+ * The function removes an element from a list if it exists.
+ * @param {any} el - The parameter `el` represents an element object.
+ */
+function removeFromListIfAny(el:any) {
+  if (el.parent && (renderingComponent.id != el.parent || renderingComponent.dynIndex != el.dynIndex)) {
+    let tmp2 = Blocks.get(el.parent)[internal].dyn,
+      e,
+      j;
+    if (el.listItem) {
+      e = el.getList();
+      j = e.curData.indexOf(el);
+      e.curData[j] = '';
+      if (j == 0) {
+        el.node.replaceWith((e.pos.head = document.createTextNode('')));
+      } else if (j == e.curData.length - 1) {
+        el.node.replaceWith((e.pos.tail = document.createTextNode('')));
+      } else {
+        el.node.replaceWith(document.createTextNode(''));
+      }
+      el.listItem = false;
+      el.getList = undefined;
+    } else {
+      tmp2[(j = el.dynIndex)].node.replaceWith((e = document.createTextNode('')));
+      tmp2[j] = { node: e, type: NODETYPES.text, value: '' };
+    }
+    el.parent = 0;
+    el.dynIndex = 0;
+  }
+}
+/**
+ * The function represents a component method 
+ * @param  - - `this`: The context object for the method, which should have a property `fnId` of type
+ * `number`.
+ * @param {any} args - The `args` parameter is of type `any`. It
+ * is used as an argument to pass to the component method being called.
+ */
 function ComponentMethod(this: { fnId: number }, args: any) {
   if ((B as any).isSSR) {
     return;
@@ -373,6 +436,14 @@ function ComponentMethod(this: { fnId: number }, args: any) {
   _internal_.init_dyn = null;
   return out;
 }
+/**
+ * The `getComponentInstance` returns a component instance based on the provided
+ * initialization arguments.
+ * @param  - - `this` is an object that has the component class' id as a property `fnId`.
+ * @param {any} initArgs - The `initArgs` parameter is an object that contains the initial arguments
+ * for the component instance. These arguments will be made accessible in the component's `onCreation` method
+ *  when it is instantiated.
+ */
 function getComponentInstance(this: { fnId: number }, initArgs: any) {
   // if ((B as any).isSSR) { return}
   let _b: any;
