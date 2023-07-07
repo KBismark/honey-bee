@@ -1,4 +1,9 @@
-function runDynamicnodes(id: number, classDyn: Array<any>, compDyn: any) {
+import { Blocks, internal, renderingComponent, B, _external, independent, NODETYPES, CreatedComponents, componentsTrashBin, dynamicNodeUpdates } from "./global";
+import { observeDependency } from "./helper-methods.export";
+import { insertList, removeList } from "./lists-updates.export";
+import { updateList } from "./lists.exports";
+
+export function runDynamicnodes(id: number, classDyn: Array<any>, compDyn: any) {
   const l = classDyn.length;
   const comp = Blocks.get(id);
   const _internal_ = comp[internal];
@@ -81,7 +86,7 @@ function runDynamicnodes(id: number, classDyn: Array<any>, compDyn: any) {
   }
   _internal_.Args = undefined;
 }
-function updateDynamicnodes(id: number) {
+export function updateDynamicnodes(id: number) {
   const comp = Blocks.get(id);
   const _internal_ = comp[internal];
   const compClass = CreatedComponents.get(_internal_.fnId);
@@ -241,7 +246,7 @@ function updateDynamicnodes(id: number) {
   }
   _internal_.Args = undefined;
 }
-function updateStatefulDynamicnodes(id: number) {
+export function updateStatefulDynamicnodes(id: number) {
   const comp = Blocks.get(id);
   const _internal_ = comp[internal];
   const compClass = CreatedComponents.get(_internal_.fnId);

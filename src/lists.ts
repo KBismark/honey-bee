@@ -1,12 +1,17 @@
+import { internal_ins, internal, listCount, NODETYPES, listUpdates } from "./global";
+import { startUpdates } from "./helper-methods.export";
+import { ListInternal, getList } from "./lists.exports";
+import { BeeComponentInstanceObject } from "./ui";
+
 function getListItem(item: any) {
   return item && item[internal_ins] ? item : item == null ? '' : ''.concat(item);
 }
 
-class List {
+export class List {
   constructor(list: any[]) {
     const a = this[internal];
     a.curData = list.map(getListItem);
-    a.id = ++listCount;
+    a.id = ++(listCount as any);
   }
 
   [internal]: ListInternal = {

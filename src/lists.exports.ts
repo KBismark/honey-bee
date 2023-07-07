@@ -1,4 +1,7 @@
-function updateList(list: any, parentData: any, node: any) {
+import { renderingComponent, Blocks, internal_ins, componentsTrashBin, internal } from "./global";
+import { BeeComponentInstanceObject } from "./ui";
+
+export function updateList(list: any, parentData: any, node: any) {
   let stack = list.stack;
   let data, d, t, b, l, i;
   if (stack.length) {
@@ -248,7 +251,7 @@ function updateList(list: any, parentData: any, node: any) {
     d.fn = d.data = undefined;
   }
 }
-let list_text_replacer = {};
+export let list_text_replacer = {};
 /**
  *
  * @param listData
@@ -257,7 +260,7 @@ let list_text_replacer = {};
  * @param listGetter
  * @returns
  */
-function buildListNodes(listData: any, parent: number, dynIndex: number, listGetter: typeof getList) {
+export function buildListNodes(listData: any, parent: number, dynIndex: number, listGetter: typeof getList) {
   let l = listData.length,
     ar,
     j,
@@ -282,10 +285,10 @@ function buildListNodes(listData: any, parent: number, dynIndex: number, listGet
   docF.append.apply(docF, ar);
   return docF;
 }
-const getList = function getList(this: any): ListInternal {
+export function getList(this: any): ListInternal {
   return this[internal];
 };
-type ListInternal = {
+export type ListInternal = {
   id: number;
   type: number;
   stack: any[];

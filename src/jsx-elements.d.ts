@@ -3,205 +3,196 @@
     // Project: http://facebook.github.io/react/
 
 
-    declare global {
-        namespace JSX {
-            type Element = {};
-            interface IntrinsicElements {
-                view: ViewWrapperTag;
-                // HTML
-                a: HTMLTags|HTMLTagsExtension.AnchorHTMLAttributes;
-                abbr: HTMLTags;
-                address: HTMLTags;
-                area: HTMLTags|HTMLTagsExtension.AreaHTMLAttributes;
-                article: HTMLTags;
-                aside: HTMLTags;
-                audio: HTMLTags|HTMLTagsExtension.AudioHTMLAttributes;
-                b: HTMLTags;
-                base: HTMLTags|HTMLTagsExtension.BaseHTMLAttributes;
-                bdi: HTMLTags;
-                bdo: HTMLTags;
-                big: HTMLTags;
-                blockquote: HTMLTags|HTMLTagsExtension.BlockquoteHTMLAttributes;
-                body: HTMLTags;
-                br: HTMLTags;
-                button: HTMLTags|HTMLTagsExtension.ButtonHTMLAttributes;
-                canvas: HTMLTags|HTMLTagsExtension.CanvasHTMLAttributes;
-                caption: HTMLTags;
-                cite: HTMLTags;
-                code: HTMLTags;
-                col: HTMLTags|HTMLTagsExtension.ColHTMLAttributes;
-                colgroup: HTMLTags|HTMLTagsExtension.ColgroupHTMLAttributes;
-                data: HTMLTags|HTMLTagsExtension.DataHTMLAttributes;
-                datalist: HTMLTags;
-                dd: HTMLTags;
-                del: HTMLTags|HTMLTagsExtension.DelHTMLAttributes;
-                details: HTMLTags|HTMLTagsExtension.DetailsHTMLAttributes;
-                dfn: HTMLTags;
-                dialog: HTMLTags|HTMLTagsExtension.DialogHTMLAttributes;
-                div: HTMLTags; 
-                dl: HTMLTags;
-                dt: HTMLTags;
-                em: HTMLTags;
-                embed: HTMLTags;
-                fieldset: HTMLTags|HTMLTagsExtension.FieldsetHTMLAttributes;
-                figcaption: HTMLTags;
-                figure: HTMLTags;
-                footer: HTMLTags;
-                form: HTMLTags|HTMLTagsExtension.FormHTMLAttributes;
-                h1: HTMLTags;
-                h2: HTMLTags;
-                h3: HTMLTags;
-                h4: HTMLTags;
-                h5: HTMLTags;
-                h6: HTMLTags;
-                head: HTMLTags;
-                header: HTMLTags;
-                hgroup: HTMLTags;
-                hr: HTMLTags;
-                html: HTMLTags|HTMLTagsExtension.HtmlHTMLAttributes;
-                i: HTMLTags;
-                iframe: HTMLTags|HTMLTagsExtension.IframeHTMLAttributes;
-                img: HTMLTags|HTMLTagsExtension.ImgHTMLAttributes;
-                input: HTMLTags|HTMLTagsExtension.InputHTMLAttributes;
-                ins: HTMLTags|HTMLTagsExtension.InsHTMLAttributes;
-                kbd: HTMLTags;
-                keygen: HTMLTags|HTMLTagsExtension.KeygenHTMLAttributes;
-                label: HTMLTags|HTMLTagsExtension.LabelHTMLAttributes;
-                legend: HTMLTags;
-                li: HTMLTags|HTMLTagsExtension.LiHTMLAttributes;
-                link: HTMLTags|HTMLTagsExtension.LinkHTMLAttributes;
-                main: HTMLTags;
-                map: HTMLTags|HTMLTagsExtension.MapHTMLAttributes;
-                mark: HTMLTags;
-                menu: HTMLTags|HTMLTagsExtension.MenuHTMLAttributes;
-                menuitem: HTMLTags;
-                meta: HTMLTags|HTMLTagsExtension.MetaHTMLAttributes;
-                meter: HTMLTags|HTMLTagsExtension.MeterHTMLAttributes;
-                nav: HTMLTags;
-                noindex: HTMLTags;
-                noscript: HTMLTags;
-                object: HTMLTags|HTMLTagsExtension.ObjectHTMLAttributes;
-                ol: HTMLTags|HTMLTagsExtension.OlHTMLAttributes;
-                optgroup: HTMLTags|HTMLTagsExtension.OptgroupHTMLAttributes;
-                option: HTMLTags|HTMLTagsExtension.OptionHTMLAttributes;
-                output: HTMLTags|HTMLTagsExtension.OutputHTMLAttributes;
-                p: HTMLTags;
-                param: HTMLTags|HTMLTagsExtension.ParamHTMLAttributes;
-                picture: HTMLTags;
-                pre: HTMLTags;
-                progress: HTMLTags|HTMLTagsExtension.ProgressHTMLAttributes;
-                q: HTMLTags;
-                rp: HTMLTags;
-                rt: HTMLTags;
-                ruby: HTMLTags;
-                s: HTMLTags;
-                samp: HTMLTags;
-                slot: HTMLTags|HTMLTagsExtension.SlotHTMLAttributes;
-                script: HTMLTags|HTMLTagsExtension.ScriptHTMLAttributes;
-                section: HTMLTags;
-                select: HTMLTags|HTMLTagsExtension.SelectHTMLAttributes;
-                small: HTMLTags;
-                source: HTMLTags|HTMLTagsExtension.SourceHTMLAttributes;
-                span: HTMLTags;
-                strong: HTMLTags;
-                style: HTMLTags|HTMLTagsExtension.StyleHTMLAttributes;
-                sub: HTMLTags;
-                summary: HTMLTags;
-                sup: HTMLTags;
-                table: HTMLTags|HTMLTagsExtension.TableHTMLAttributes;
-                template: HTMLTags;
-                tbody: HTMLTags;
-                td: HTMLTags|HTMLTagsExtension.TdHTMLAttributes;
-                textarea: HTMLTags|HTMLTagsExtension.TextareaHTMLAttributes;
-                tfoot: HTMLTags;
-                th: HTMLTags|HTMLTagsExtension.ThHTMLAttributes;
-                thead: HTMLTags;
-                time: HTMLTags|HTMLTagsExtension.TimeHTMLAttributes;
-                title: HTMLTags;
-                tr: HTMLTags;
-                track: HTMLTags|HTMLTagsExtension.TrackHTMLAttributes;
-                u: HTMLTags;
-                ul: HTMLTags;
-                "var": HTMLTags;
-                video: HTMLTags|HTMLTagsExtension.VideoHTMLAttributes;
-                wbr: HTMLTags;
-                webview: HTMLTags|HTMLTagsExtension.WebViewHTMLAttributes;
+declare global {
+    namespace JSX {
+        type Element = {};
+        interface IntrinsicElements<T = any> {
+            view: ViewWrapperTag;
+            // HTML
+            a: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.AnchorHTMLAttributes;
+            abbr: HTMLTags;
+            address: HTMLTags;
+            area: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.AreaHTMLAttributes;
+            article: HTMLTags;
+            aside: HTMLTags;
+            audio: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.AudioHTMLAttributes;
+            b: HTMLTags;
+            base: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.BaseHTMLAttributes;
+            bdi: HTMLTags;
+            bdo: HTMLTags;
+            big: HTMLTags;
+            blockquote: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.BlockquoteHTMLAttributes;
+            body: HTMLTags;
+            br: HTMLTags;
+            button: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ButtonHTMLAttributes;
+            canvas: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.CanvasHTMLAttributes;
+            caption: HTMLTags;
+            cite: HTMLTags;
+            code: HTMLTags;
+            col: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ColHTMLAttributes;
+            colgroup: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ColgroupHTMLAttributes;
+            data: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.DataHTMLAttributes;
+            datalist: HTMLTags;
+            dd: HTMLTags;
+            del: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.DelHTMLAttributes;
+            details: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.DetailsHTMLAttributes;
+            dfn: HTMLTags;
+            dialog: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.DialogHTMLAttributes;
+            div: HTMLTags;
+            dl: HTMLTags;
+            dt: HTMLTags;
+            em: HTMLTags;
+            embed: HTMLTags;
+            fieldset: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.FieldsetHTMLAttributes;
+            figcaption: HTMLTags;
+            figure: HTMLTags;
+            footer: HTMLTags;
+            form: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.FormHTMLAttributes;
+            h1: HTMLTags;
+            h2: HTMLTags;
+            h3: HTMLTags;
+            h4: HTMLTags;
+            h5: HTMLTags;
+            h6: HTMLTags;
+            head: HTMLTags;
+            header: HTMLTags;
+            hgroup: HTMLTags;
+            hr: HTMLTags;
+            html: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.HtmlHTMLAttributes;
+            i: HTMLTags;
+            iframe: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.IframeHTMLAttributes;
+            img: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ImgHTMLAttributes;
+            input: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.InputHTMLAttributes;
+            ins: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.InsHTMLAttributes;
+            kbd: HTMLTags;
+            keygen: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.KeygenHTMLAttributes;
+            label: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.LabelHTMLAttributes;
+            legend: HTMLTags;
+            li: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.LiHTMLAttributes;
+            link: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.LinkHTMLAttributes;
+            main: HTMLTags;
+            map: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.MapHTMLAttributes;
+            mark: HTMLTags;
+            menu: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.MenuHTMLAttributes;
+            menuitem: HTMLTags;
+            meta: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.MetaHTMLAttributes;
+            meter: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.MeterHTMLAttributes;
+            nav: HTMLTags;
+            noindex: HTMLTags;
+            noscript: HTMLTags;
+            object: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ObjectHTMLAttributes;
+            ol: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.OlHTMLAttributes;
+            optgroup: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.OptgroupHTMLAttributes;
+            option: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.OptionHTMLAttributes;
+            output: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.OutputHTMLAttributes;
+            p: HTMLTags;
+            param: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ParamHTMLAttributes;
+            picture: HTMLTags;
+            pre: HTMLTags;
+            progress: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ProgressHTMLAttributes;
+            q: HTMLTags;
+            rp: HTMLTags;
+            rt: HTMLTags;
+            ruby: HTMLTags;
+            s: HTMLTags;
+            samp: HTMLTags;
+            slot: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.SlotHTMLAttributes;
+            script: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ScriptHTMLAttributes;
+            section: HTMLTags;
+            select: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.SelectHTMLAttributes;
+            small: HTMLTags;
+            source: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.SourceHTMLAttributes;
+            span: HTMLTags;
+            strong: HTMLTags;
+            style: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.StyleHTMLAttributes;
+            sub: HTMLTags;
+            summary: HTMLTags;
+            sup: HTMLTags;
+            table: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.TableHTMLAttributes;
+            template: HTMLTags;
+            tbody: HTMLTags;
+            td: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.TdHTMLAttributes;
+            textarea: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.TextareaHTMLAttributes;
+            tfoot: HTMLTags;
+            th: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.ThHTMLAttributes;
+            thead: HTMLTags;
+            time: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.TimeHTMLAttributes;
+            title: HTMLTags;
+            tr: HTMLTags;
+            track: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.TrackHTMLAttributes;
+            u: HTMLTags;
+            ul: HTMLTags;
+            "var": HTMLTags;
+            video: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.VideoHTMLAttributes;
+            wbr: HTMLTags;
+            webview: EventHandlersEventMap<T> | HTMLTags | HTMLTagsExtension.WebViewHTMLAttributes;
     
-                // SVG
-                svg: any;
+            // SVG
+            svg: any;
     
-                animate: any; // TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now.
-                animateMotion: any;
-                animateTransform: any; // TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now.
-                circle: Empty<SVGCircleElement>;
-                clipPath: Empty<SVGClipPathElement>;
-                defs: Empty<SVGDefsElement>;
-                desc: Empty<SVGDescElement>;
-                ellipse: Empty<SVGEllipseElement>;
-                feBlend: Empty<SVGFEBlendElement>;
-                feColorMatrix: Empty<SVGFEColorMatrixElement>;
-                feComponentTransfer: Empty<SVGFEComponentTransferElement>;
-                feComposite: Empty<SVGFECompositeElement>;
-                feConvolveMatrix: Empty<SVGFEConvolveMatrixElement>;
-                feDiffuseLighting: Empty<SVGFEDiffuseLightingElement>;
-                feDisplacementMap: Empty<SVGFEDisplacementMapElement>;
-                feDistantLight: Empty<SVGFEDistantLightElement>;
-                feDropShadow: Empty<SVGFEDropShadowElement>;
-                feFlood: Empty<SVGFEFloodElement>;
-                feFuncA: Empty<SVGFEFuncAElement>;
-                feFuncB: Empty<SVGFEFuncBElement>;
-                feFuncG: Empty<SVGFEFuncGElement>;
-                feFuncR: Empty<SVGFEFuncRElement>;
-                feGaussianBlur: Empty<SVGFEGaussianBlurElement>;
-                feImage: Empty<SVGFEImageElement>;
-                feMerge: Empty<SVGFEMergeElement>;
-                feMergeNode: Empty<SVGFEMergeNodeElement>;
-                feMorphology: Empty<SVGFEMorphologyElement>;
-                feOffset: Empty<SVGFEOffsetElement>;
-                fePointLight: Empty<SVGFEPointLightElement>;
-                feSpecularLighting: Empty<SVGFESpecularLightingElement>;
-                feSpotLight: Empty<SVGFESpotLightElement>;
-                feTile: Empty<SVGFETileElement>;
-                feTurbulence: Empty<SVGFETurbulenceElement>;
-                filter: Empty<SVGFilterElement>;
-                foreignObject: Empty<SVGForeignObjectElement>;
-                g: Empty<SVGGElement>;
-                image: Empty<SVGImageElement>;
-                line: Empty<SVGLineElement>;
-                linearGradient: Empty<SVGLinearGradientElement>;
-                marker: Empty<SVGMarkerElement>;
-                mask: Empty<SVGMaskElement>;
-                metadata: Empty<SVGMetadataElement>;
-                mpath: any;
-                path: Empty<SVGPathElement>;
-                pattern: Empty<SVGPatternElement>;
-                polygon: Empty<SVGPolygonElement>;
-                polyline: Empty<SVGPolylineElement>;
-                radialGradient: Empty<SVGRadialGradientElement>;
-                rect: Empty<SVGRectElement>;
-                stop: Empty<SVGStopElement>;
-                switch: Empty<SVGSwitchElement>;
-                symbol: Empty<SVGSymbolElement>;
-                text: Empty<SVGTextElement>;
-                textPath: Empty<SVGTextPathElement>;
-                tspan: Empty<SVGTSpanElement>;
-                use: Empty<SVGUseElement>;
-                //view: Empty<SVGViewElement>;
-            }
+            animate: any; // TODO: It is SVGAnimateElement but is not in TypeScript's lib.dom.d.ts for now.
+            animateMotion: any;
+            animateTransform: any; // TODO: It is SVGAnimateTransformElement but is not in TypeScript's lib.dom.d.ts for now.
+            circle: Empty<SVGCircleElement>;
+            clipPath: Empty<SVGClipPathElement>;
+            defs: Empty<SVGDefsElement>;
+            desc: Empty<SVGDescElement>;
+            ellipse: Empty<SVGEllipseElement>;
+            feBlend: Empty<SVGFEBlendElement>;
+            feColorMatrix: Empty<SVGFEColorMatrixElement>;
+            feComponentTransfer: Empty<SVGFEComponentTransferElement>;
+            feComposite: Empty<SVGFECompositeElement>;
+            feConvolveMatrix: Empty<SVGFEConvolveMatrixElement>;
+            feDiffuseLighting: Empty<SVGFEDiffuseLightingElement>;
+            feDisplacementMap: Empty<SVGFEDisplacementMapElement>;
+            feDistantLight: Empty<SVGFEDistantLightElement>;
+            feDropShadow: Empty<SVGFEDropShadowElement>;
+            feFlood: Empty<SVGFEFloodElement>;
+            feFuncA: Empty<SVGFEFuncAElement>;
+            feFuncB: Empty<SVGFEFuncBElement>;
+            feFuncG: Empty<SVGFEFuncGElement>;
+            feFuncR: Empty<SVGFEFuncRElement>;
+            feGaussianBlur: Empty<SVGFEGaussianBlurElement>;
+            feImage: Empty<SVGFEImageElement>;
+            feMerge: Empty<SVGFEMergeElement>;
+            feMergeNode: Empty<SVGFEMergeNodeElement>;
+            feMorphology: Empty<SVGFEMorphologyElement>;
+            feOffset: Empty<SVGFEOffsetElement>;
+            fePointLight: Empty<SVGFEPointLightElement>;
+            feSpecularLighting: Empty<SVGFESpecularLightingElement>;
+            feSpotLight: Empty<SVGFESpotLightElement>;
+            feTile: Empty<SVGFETileElement>;
+            feTurbulence: Empty<SVGFETurbulenceElement>;
+            filter: Empty<SVGFilterElement>;
+            foreignObject: Empty<SVGForeignObjectElement>;
+            g: Empty<SVGGElement>;
+            image: Empty<SVGImageElement>;
+            line: Empty<SVGLineElement>;
+            linearGradient: Empty<SVGLinearGradientElement>;
+            marker: Empty<SVGMarkerElement>;
+            mask: Empty<SVGMaskElement>;
+            metadata: Empty<SVGMetadataElement>;
+            mpath: any;
+            path: Empty<SVGPathElement>;
+            pattern: Empty<SVGPatternElement>;
+            polygon: Empty<SVGPolygonElement>;
+            polyline: Empty<SVGPolylineElement>;
+            radialGradient: Empty<SVGRadialGradientElement>;
+            rect: Empty<SVGRectElement>;
+            stop: Empty<SVGStopElement>;
+            switch: Empty<SVGSwitchElement>;
+            symbol: Empty<SVGSymbolElement>;
+            text: Empty<SVGTextElement>;
+            textPath: Empty<SVGTextPathElement>;
+            tspan: Empty<SVGTSpanElement>;
+            use: Empty<SVGUseElement>;
+            //view: Empty<SVGViewElement>;
         }
-       
+    }
+        
         
 }
     interface Empty<T>{}
-    interface SpecialStyleObject {
-        style?:CSSStyleDeclaration;
-    }
-    interface SpecialStyleString {
-        style?:string;
-    }
-    interface SpecialClassName {
-        class?:string;
-    }
     /** 
      * This tag is only meant for wrapping your HTML code 
      * to ease code detecting and reduce compilation time.
@@ -211,23 +202,121 @@
      * one top-most parent element.
      */
     interface ViewWrapperTag{}
-    type HTMLTags = BHTMLAttributeSet1|BHTMLAttributeSet2|ARIAMixins|SpecialStyleString|SpecialClassName;
+    type HTMLTags = BHTMLAttributeSet1|BHTMLAttributeSet2|ARIAMixins;
     type DynamicAttributeWithDependencies = { value: any, $dep: string[] };
-    interface ComponentNode{}
+    
+    type EventHandlersEventMap<T> ={
+        onAbort?: ((this: GlobalEventHandlers, ev: UIEvent,This:T) => any) | null;
+        onAnimationcancel?: ((this: GlobalEventHandlers, ev: AnimationEvent,This:T) => any) | null;
+        onAnimationend?: ((this: GlobalEventHandlers, ev: AnimationEvent,This:T) => any) | null;
+        onAnimationiteration?: ((this: GlobalEventHandlers, ev: AnimationEvent,This:T) => any) | null;
+        onAnimationstart?: ((this: GlobalEventHandlers, ev: AnimationEvent,This:T) => any) | null;
+        onAuxclick?: ((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onBeforeinput?: ((this: GlobalEventHandlers, ev: InputEvent,This:T) => any) | null;
+        oBlur?: ((this: GlobalEventHandlers, ev: FocusEvent,This:T) => any) | null;
+        onCancel?: ((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onCanplay?: ((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onCanplaythrough?: ((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onChange?: ((this: GlobalEventHandlers, ev: UIEvent,This:T) => any) | null;
+        onClick?: ((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onClose?: ((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onCompositionend?: ((this: GlobalEventHandlers, ev: CompositionEvent,This:T) => any) | null;
+        onCompositionstart?: ((this: GlobalEventHandlers, ev: CompositionEvent,This:T) => any) | null;
+        onCompositionupdate?: ((this: GlobalEventHandlers, ev: CompositionEvent,This:T) => any) | null;
+        onContextmenu?: ((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onCopy?: ((this: GlobalEventHandlers, ev: ClipboardEvent,This:T) => any) | null;
+        onCuechange?: ((this: GlobalEventHandlers, ev: UIEvent,This:T) => any) | null;
+        onCut?: ((this: GlobalEventHandlers, ev: ClipboardEvent,This:T) => any) | null;
+        onDblclick?: ((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onDrag?: ((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDragend?: ((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDragenter?: ((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDragleave?:((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDragover?:((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDragstart?:((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDrop?:((this: GlobalEventHandlers, ev: DragEvent,This:T) => any) | null;
+        onDurationchange?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onEmptied?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onEnded?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onError?: ((this: GlobalEventHandlers, ev: ErrorEvent,This:T) => any) | null;
+        onFocus?:((this: GlobalEventHandlers, ev: FocusEvent,This:T) => any) | null;
+        onFocusin?:((this: GlobalEventHandlers, ev: FocusEvent,This:T) => any) | null;
+        onFocusout?:((this: GlobalEventHandlers, ev: FocusEvent,This:T) => any) | null;
+        onFormdata?:((this: GlobalEventHandlers, ev: FormDataEvent,This:T) => any) | null;
+        onGotpointercapture?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onInput?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onInvalid?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onKeydown?:((this: GlobalEventHandlers, ev: KeyboardEvent,This:T) => any) | null;
+        onKeypress?:((this: GlobalEventHandlers, ev: KeyboardEvent,This:T) => any) | null;
+        onKeyup?:((this: GlobalEventHandlers, ev: KeyboardEvent,This:T) => any) | null;
+        onLoad?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onLoadeddata?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onLoadedmetadata?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onLoadstart?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onLostpointercapture?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onMousedown?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMouseenter?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMouseleave?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMousemove?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMouseout?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMouseover?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onMouseup?:((this: GlobalEventHandlers, ev: MouseEvent,This:T) => any) | null;
+        onPaste?:((this: GlobalEventHandlers, ev: ClipboardEvent,This:T) => any) | null;
+        onPause?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onPlay?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onPlaying?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onPointercancel?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerdown?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerenter?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerleave?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointermove?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerout?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerover?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onPointerup?:((this: GlobalEventHandlers, ev: PointerEvent,This:T) => any) | null;
+        onProgress?:((this: GlobalEventHandlers, ev: ProgressEvent,This:T) => any) | null;
+        onRatechange?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onReset?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onResize?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onScroll?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSecuritypolicyviolation?:((this: GlobalEventHandlers, ev: SecurityPolicyViolationEvent,This:T) => any) | null;
+        onSeeked?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSeeking?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSelect?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSelectionchange?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSelectstart?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSlotchange?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onStalled?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onSubmit?:((this: GlobalEventHandlers, ev: SubmitEvent,This:T) => any) | null;
+        onSuspend?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onTimeupdate?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onToggle?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onTouchcancel?:((this: GlobalEventHandlers, ev: TouchEvent,This:T) => any) | null;
+        onTouchend?:((this: GlobalEventHandlers, ev: TouchEvent,This:T) => any) | null;
+        onTouchmove?:((this: GlobalEventHandlers, ev: TouchEvent,This:T) => any) | null;
+        onTouchstart?:((this: GlobalEventHandlers, ev: TouchEvent,This:T) => any) | null;
+        onTransitioncancel?:((this: GlobalEventHandlers, ev: TransitionEvent,This:T) => any) | null;
+        onTransitionend?:((this: GlobalEventHandlers, ev: TransitionEvent,This:T) => any) | null;
+        onTransitionrun?:((this: GlobalEventHandlers, ev: TransitionEvent,This:T) => any) | null;
+        onTransitionstart?:((this: GlobalEventHandlers, ev: TransitionEvent,This:T) => any) | null;
+        onVolumechange?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWaiting?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWebkitanimationend?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWebkitanimationiteration?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWebkitanimationstart?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWebkittransitionend?:((this: GlobalEventHandlers, ev: Event,This:T) => any) | null;
+        onWheel?:((this: GlobalEventHandlers, ev: WheelEvent,This:T) => any) | null;
+    }
+    
     
    
-    
-    
-    // Taken from React (18.0) Type definitions 
-    // Project: http://facebook.github.io/react/
 interface BHTMLAttributeSet2 extends NonDependencyAttributes, HTMLAttribute{ }
 interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
     interface HTMLAttribute{
-        key?: string | undefined;
+        key?: string;
     
         // Standard HTML Attributes
         accesskey?: string | undefined;
-        //class?: string | undefined;
+        class?: string | undefined;
         contenteditable?: boolean | "inherit" | undefined;
         contextmenu?: string | undefined;
         dir?: string | undefined;
@@ -237,7 +326,7 @@ interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
         lang?: string | undefined;
         slot?: string | undefined;
         spellcheck?: boolean | undefined;
-        //style?: CSSStyleDeclaration | undefined;
+        style?: string | undefined;
         tabindex?: string | undefined;
         title?: string | undefined;
         translate?: 'yes' | 'no' | undefined;
@@ -251,7 +340,7 @@ interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
         alt?: string | undefined;
         as?: string | undefined;
         async?: boolean | undefined;
-        autocomplete?: string | undefined;
+        autocomplete?:  boolean | undefined;
         autofocus?: boolean | undefined;
         autoplay?: boolean | undefined;
         capture?: boolean | 'user' | 'environment' | undefined;
@@ -386,329 +475,329 @@ interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
         is?: string | undefined;
     }
     interface DependencyAttributes {
-        $class: DynamicAttributeWithDependencies;
-        $style: DynamicAttributeWithDependencies;
+        $class?: DynamicAttributeWithDependencies;
+        $style?: DynamicAttributeWithDependencies;
         // Standard HTML Attributes
-        $accesskey: DynamicAttributeWithDependencies;
-        //class: DynamicAttributeWithDependencies;
-        $contenteditable: DynamicAttributeWithDependencies;
-        $contextmenu: DynamicAttributeWithDependencies;
-        $dir: DynamicAttributeWithDependencies;
-        $draggable: DynamicAttributeWithDependencies;
-        $hidden: DynamicAttributeWithDependencies;
-        $id: DynamicAttributeWithDependencies;
-        $lang: DynamicAttributeWithDependencies;
-        $slot: DynamicAttributeWithDependencies;
-        $spellcheck: DynamicAttributeWithDependencies;
-        $tabindex: DynamicAttributeWithDependencies;
-        $title: DynamicAttributeWithDependencies;
-        $translate: DynamicAttributeWithDependencies;
+        $accesskey?: DynamicAttributeWithDependencies;
+        //class?: DynamicAttributeWithDependencies;
+        $contenteditable?: DynamicAttributeWithDependencies;
+        $contextmenu?: DynamicAttributeWithDependencies;
+        $dir?: DynamicAttributeWithDependencies;
+        $draggable?: DynamicAttributeWithDependencies;
+        $hidden?: DynamicAttributeWithDependencies;
+        $id?: DynamicAttributeWithDependencies;
+        $lang?: DynamicAttributeWithDependencies;
+        $slot?: DynamicAttributeWithDependencies;
+        $spellcheck?: DynamicAttributeWithDependencies;
+        $tabindex?: DynamicAttributeWithDependencies;
+        $title?: DynamicAttributeWithDependencies;
+        $translate?: DynamicAttributeWithDependencies;
     
         // Other Standard HTML Attributes
-        $accept: DynamicAttributeWithDependencies;
-        $acceptcharset: DynamicAttributeWithDependencies;
-        $action: DynamicAttributeWithDependencies;
-        $allowfullscreen: DynamicAttributeWithDependencies;
-        $allowtransparency: DynamicAttributeWithDependencies;
-        $alt: DynamicAttributeWithDependencies;
-        $as: DynamicAttributeWithDependencies;
-        $async: DynamicAttributeWithDependencies;
-        $autocomplete: DynamicAttributeWithDependencies;
-        $autofocus: DynamicAttributeWithDependencies;
-        $autoplay: DynamicAttributeWithDependencies;
-        $capture: DynamicAttributeWithDependencies;
-        $cellpadding: DynamicAttributeWithDependencies;
-        $cellspacing: DynamicAttributeWithDependencies;
-        $charset: DynamicAttributeWithDependencies;
-        $challenge: DynamicAttributeWithDependencies;
-        $checked: DynamicAttributeWithDependencies;
-        $cite: DynamicAttributeWithDependencies;
-        $cols: DynamicAttributeWithDependencies;
-        $colspan: DynamicAttributeWithDependencies;
-        $content: DynamicAttributeWithDependencies;
-        $controls: DynamicAttributeWithDependencies;
-        $coords: DynamicAttributeWithDependencies;
-        $crossorigin: DynamicAttributeWithDependencies;
-        $data: DynamicAttributeWithDependencies;
-        $datetime: DynamicAttributeWithDependencies;
-        $default: DynamicAttributeWithDependencies;
-        $defer: DynamicAttributeWithDependencies;
-        $disabled: DynamicAttributeWithDependencies;
-        $download: DynamicAttributeWithDependencies;
-        $enctype: DynamicAttributeWithDependencies;
-        $form: DynamicAttributeWithDependencies;
-        $formaction: DynamicAttributeWithDependencies;
-        $formencType: DynamicAttributeWithDependencies;
-        $formmethod: DynamicAttributeWithDependencies;
-        $formnovalidate: DynamicAttributeWithDependencies;
-        $formtarget: DynamicAttributeWithDependencies;
-        $frameborder: DynamicAttributeWithDependencies;
-        $headers: DynamicAttributeWithDependencies;
-        $height: DynamicAttributeWithDependencies;
-        $high: DynamicAttributeWithDependencies;
-        $href: DynamicAttributeWithDependencies;
-        $hreflang: DynamicAttributeWithDependencies;
-        $for: DynamicAttributeWithDependencies;
-        $httpequiv: DynamicAttributeWithDependencies;
-        $integrity: DynamicAttributeWithDependencies;
-        $keyparams: DynamicAttributeWithDependencies;
-        $keytype: DynamicAttributeWithDependencies;
-        $kind: DynamicAttributeWithDependencies;
-        $label: DynamicAttributeWithDependencies;
-        $list: DynamicAttributeWithDependencies;
-        $loop: DynamicAttributeWithDependencies;
-        $low: DynamicAttributeWithDependencies;
-        $manifest: DynamicAttributeWithDependencies;
-        $marginheight: DynamicAttributeWithDependencies;
-        $marginwidth: DynamicAttributeWithDependencies;
-        $max: DynamicAttributeWithDependencies;
-        $maxlength: DynamicAttributeWithDependencies;
-        $media: DynamicAttributeWithDependencies;
-        $mediagroup: DynamicAttributeWithDependencies;
-        $method: DynamicAttributeWithDependencies;
-        $min: DynamicAttributeWithDependencies;
-        $minlength: DynamicAttributeWithDependencies;
-        $multiple: DynamicAttributeWithDependencies;
-        $muted: DynamicAttributeWithDependencies;
-        $name: DynamicAttributeWithDependencies;
-        $nonce: DynamicAttributeWithDependencies;
-        $novalidate: DynamicAttributeWithDependencies;
-        $open: DynamicAttributeWithDependencies;
-        $optimum: DynamicAttributeWithDependencies;
-        $pattern: DynamicAttributeWithDependencies;
-        $placeholder: DynamicAttributeWithDependencies;
-        $playsinline: DynamicAttributeWithDependencies;
-        $poster: DynamicAttributeWithDependencies;
-        $preload: DynamicAttributeWithDependencies;
-        $readonly: DynamicAttributeWithDependencies;
-        $rel: DynamicAttributeWithDependencies;
-        $required: DynamicAttributeWithDependencies;
-        $reversed: DynamicAttributeWithDependencies;
-        $rows: DynamicAttributeWithDependencies;
-        $rowspan: DynamicAttributeWithDependencies;
-        $sandbox: DynamicAttributeWithDependencies;
-        $scope: DynamicAttributeWithDependencies;
-        $scoped: DynamicAttributeWithDependencies;
-        $scrolling: DynamicAttributeWithDependencies;
-        $seamless: DynamicAttributeWithDependencies;
-        $selected: DynamicAttributeWithDependencies;
-        $shape: DynamicAttributeWithDependencies;
-        $size: DynamicAttributeWithDependencies;
-        $sizes: DynamicAttributeWithDependencies;
-        $span: DynamicAttributeWithDependencies;
-        $src: DynamicAttributeWithDependencies;
-        $srcdoc: DynamicAttributeWithDependencies;
-        $srclang: DynamicAttributeWithDependencies;
-        $srcset: DynamicAttributeWithDependencies;
-        $start: DynamicAttributeWithDependencies;
-        $step: DynamicAttributeWithDependencies;
-        $summary: DynamicAttributeWithDependencies;
-        $target: DynamicAttributeWithDependencies;
-        $type: DynamicAttributeWithDependencies;
-        $value: DynamicAttributeWithDependencies;
-        $width: DynamicAttributeWithDependencies;
-        $wmode: DynamicAttributeWithDependencies;
-        $wrap: DynamicAttributeWithDependencies;
+        $accept?: DynamicAttributeWithDependencies;
+        $acceptcharset?: DynamicAttributeWithDependencies;
+        $action?: DynamicAttributeWithDependencies;
+        $allowfullscreen?: DynamicAttributeWithDependencies;
+        $allowtransparency?: DynamicAttributeWithDependencies;
+        $alt?: DynamicAttributeWithDependencies;
+        $as?: DynamicAttributeWithDependencies;
+        $async?: DynamicAttributeWithDependencies;
+        $autocomplete?: DynamicAttributeWithDependencies;
+        $autofocus?: DynamicAttributeWithDependencies;
+        $autoplay?: DynamicAttributeWithDependencies;
+        $capture?: DynamicAttributeWithDependencies;
+        $cellpadding?: DynamicAttributeWithDependencies;
+        $cellspacing?: DynamicAttributeWithDependencies;
+        $charset?: DynamicAttributeWithDependencies;
+        $challenge?: DynamicAttributeWithDependencies;
+        $checked?: DynamicAttributeWithDependencies;
+        $cite?: DynamicAttributeWithDependencies;
+        $cols?: DynamicAttributeWithDependencies;
+        $colspan?: DynamicAttributeWithDependencies;
+        $content?: DynamicAttributeWithDependencies;
+        $controls?: DynamicAttributeWithDependencies;
+        $coords?: DynamicAttributeWithDependencies;
+        $crossorigin?: DynamicAttributeWithDependencies;
+        $data?: DynamicAttributeWithDependencies;
+        $datetime?: DynamicAttributeWithDependencies;
+        $default?: DynamicAttributeWithDependencies;
+        $defer?: DynamicAttributeWithDependencies;
+        $disabled?: DynamicAttributeWithDependencies;
+        $download?: DynamicAttributeWithDependencies;
+        $enctype?: DynamicAttributeWithDependencies;
+        $form?: DynamicAttributeWithDependencies;
+        $formaction?: DynamicAttributeWithDependencies;
+        $formencType?: DynamicAttributeWithDependencies;
+        $formmethod?: DynamicAttributeWithDependencies;
+        $formnovalidate?: DynamicAttributeWithDependencies;
+        $formtarget?: DynamicAttributeWithDependencies;
+        $frameborder?: DynamicAttributeWithDependencies;
+        $headers?: DynamicAttributeWithDependencies;
+        $height?: DynamicAttributeWithDependencies;
+        $high?: DynamicAttributeWithDependencies;
+        $href?: DynamicAttributeWithDependencies;
+        $hreflang?: DynamicAttributeWithDependencies;
+        $for?: DynamicAttributeWithDependencies;
+        $httpequiv?: DynamicAttributeWithDependencies;
+        $integrity?: DynamicAttributeWithDependencies;
+        $keyparams?: DynamicAttributeWithDependencies;
+        $keytype?: DynamicAttributeWithDependencies;
+        $kind?: DynamicAttributeWithDependencies;
+        $label?: DynamicAttributeWithDependencies;
+        $list?: DynamicAttributeWithDependencies;
+        $loop?: DynamicAttributeWithDependencies;
+        $low?: DynamicAttributeWithDependencies;
+        $manifest?: DynamicAttributeWithDependencies;
+        $marginheight?: DynamicAttributeWithDependencies;
+        $marginwidth?: DynamicAttributeWithDependencies;
+        $max?: DynamicAttributeWithDependencies;
+        $maxlength?: DynamicAttributeWithDependencies;
+        $media?: DynamicAttributeWithDependencies;
+        $mediagroup?: DynamicAttributeWithDependencies;
+        $method?: DynamicAttributeWithDependencies;
+        $min?: DynamicAttributeWithDependencies;
+        $minlength?: DynamicAttributeWithDependencies;
+        $multiple?: DynamicAttributeWithDependencies;
+        $muted?: DynamicAttributeWithDependencies;
+        $name?: DynamicAttributeWithDependencies;
+        $nonce?: DynamicAttributeWithDependencies;
+        $novalidate?: DynamicAttributeWithDependencies;
+        $open?: DynamicAttributeWithDependencies;
+        $optimum?: DynamicAttributeWithDependencies;
+        $pattern?: DynamicAttributeWithDependencies;
+        $placeholder?: DynamicAttributeWithDependencies;
+        $playsinline?: DynamicAttributeWithDependencies;
+        $poster?: DynamicAttributeWithDependencies;
+        $preload?: DynamicAttributeWithDependencies;
+        $readonly?: DynamicAttributeWithDependencies;
+        $rel?: DynamicAttributeWithDependencies;
+        $required?: DynamicAttributeWithDependencies;
+        $reversed?: DynamicAttributeWithDependencies;
+        $rows?: DynamicAttributeWithDependencies;
+        $rowspan?: DynamicAttributeWithDependencies;
+        $sandbox?: DynamicAttributeWithDependencies;
+        $scope?: DynamicAttributeWithDependencies;
+        $scoped?: DynamicAttributeWithDependencies;
+        $scrolling?: DynamicAttributeWithDependencies;
+        $seamless?: DynamicAttributeWithDependencies;
+        $selected?: DynamicAttributeWithDependencies;
+        $shape?: DynamicAttributeWithDependencies;
+        $size?: DynamicAttributeWithDependencies;
+        $sizes?: DynamicAttributeWithDependencies;
+        $span?: DynamicAttributeWithDependencies;
+        $src?: DynamicAttributeWithDependencies;
+        $srcdoc?: DynamicAttributeWithDependencies;
+        $srclang?: DynamicAttributeWithDependencies;
+        $srcset?: DynamicAttributeWithDependencies;
+        $start?: DynamicAttributeWithDependencies;
+        $step?: DynamicAttributeWithDependencies;
+        $summary?: DynamicAttributeWithDependencies;
+        $target?: DynamicAttributeWithDependencies;
+        $type?: DynamicAttributeWithDependencies;
+        $value?: DynamicAttributeWithDependencies;
+        $width?: DynamicAttributeWithDependencies;
+        $wmode?: DynamicAttributeWithDependencies;
+        $wrap?: DynamicAttributeWithDependencies;
     
         // Unknown
-        $radiogroup: DynamicAttributeWithDependencies; // <command>, <menuitem>
+        $radiogroup?: DynamicAttributeWithDependencies; // <command>, <menuitem>
     
         // WAI-ARIA
-        $role: DynamicAttributeWithDependencies;
+        $role?: DynamicAttributeWithDependencies;
     
         // RDFa Attributes
-        $about: DynamicAttributeWithDependencies;
-        $datatype: DynamicAttributeWithDependencies;
-        $inlist: DynamicAttributeWithDependencies;
-        $prefix: DynamicAttributeWithDependencies;
-        $property: DynamicAttributeWithDependencies;
-        $resource: DynamicAttributeWithDependencies;
-        $typeof: DynamicAttributeWithDependencies;
-        $vocab: DynamicAttributeWithDependencies;
+        $about?: DynamicAttributeWithDependencies;
+        $datatype?: DynamicAttributeWithDependencies;
+        $inlist?: DynamicAttributeWithDependencies;
+        $prefix?: DynamicAttributeWithDependencies;
+        $property?: DynamicAttributeWithDependencies;
+        $resource?: DynamicAttributeWithDependencies;
+        $typeof?: DynamicAttributeWithDependencies;
+        $vocab?: DynamicAttributeWithDependencies;
     
         // Non-standard Attributes
-        $autocapitalize: DynamicAttributeWithDependencies;
-        $autocorrect: DynamicAttributeWithDependencies;
-        $autosave: DynamicAttributeWithDependencies;
-        $color: DynamicAttributeWithDependencies;
-        $results: DynamicAttributeWithDependencies;
-        $security: DynamicAttributeWithDependencies;
-        $unselectable: DynamicAttributeWithDependencies;
+        $autocapitalize?: DynamicAttributeWithDependencies;
+        $autocorrect?: DynamicAttributeWithDependencies;
+        $autosave?: DynamicAttributeWithDependencies;
+        $color?: DynamicAttributeWithDependencies;
+        $results?: DynamicAttributeWithDependencies;
+        $security?: DynamicAttributeWithDependencies;
+        $unselectable?: DynamicAttributeWithDependencies;
     
         // Living Standard
         /**
          * Hints at the type of data that might be entered by the user while editing the element or its contents
          * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
          */
-        $inputmode: DynamicAttributeWithDependencies;
+        $inputmode?: DynamicAttributeWithDependencies;
         /**
          * Specify that a standard HTML element should behave like a defined custom built-in element
          * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
          */
-        $is: DynamicAttributeWithDependencies;
+        $is?: DynamicAttributeWithDependencies;
     }
     interface NonDependencyAttributes {
-        Class: any;
+        Class?: any;
     
         // Standard HTML Attributes
-        Accesskey: any;
-        //class: any;
-        Contenteditable: any;
-        Contextmenu: any;
-        Dir: any;
-        Draggable: any;
-        Hidden: any;
-        Id: any;
-        Lang: any;
-        Slot: any;
-        Spellcheck: any;
-        Style: any;
-        Tabindex: any;
-        Title: any;
-        Translate: any;
+        Accesskey?: any;
+        //class?: any;
+        Contenteditable?: any;
+        Contextmenu?: any;
+        Dir?: any;
+        Draggable?: any;
+        Hidden?: any;
+        Id?: any;
+        Lang?: any;
+        Slot?: any;
+        Spellcheck?: any;
+        Style?: any;
+        Tabindex?: any;
+        Title?: any;
+        Translate?: any;
     
         // Other Standard HTML Attributes
-        Accept: any;
-        Acceptcharset: any;
-        Action: any;
-        Allowfullscreen: any;
-        Allowtransparency: any;
-        Alt: any;
-        As: any;
-        Async: any;
-        Autocomplete: any;
-        Autofocus: any;
-        Autoplay: any;
-        Capture: any;
-        Cellpadding: any;
-        Cellspacing: any;
-        Charset: any;
-        Challenge: any;
-        Checked: any;
-        Cite: any;
-        Cols: any;
-        Colspan: any;
-        Content: any;
-        Controls: any;
-        Coords: any;
-        Crossorigin: any;
-        Data: any;
-        Datetime: any;
-        Default: any;
-        Defer: any;
-        Disabled: any;
-        Download: any;
-        Enctype: any;
-        Form: any;
-        Formaction: any;
-        FormencType: any;
-        Formmethod: any;
-        Formnovalidate: any;
-        Formtarget: any;
-        Frameborder: any;
-        Headers: any;
-        Height: any;
-        High: any;
-        Href: any;
-        Hreflang: any;
-        For: any;
-        Httpequiv: any;
-        Integrity: any;
-        Keyparams: any;
-        Keytype: any;
-        Kind: any;
-        Label: any;
-        List: any;
-        Loop: any;
-        Low: any;
-        Manifest: any;
-        Marginheight: any;
-        Marginwidth: any;
-        Max: any;
-        Maxlength: any;
-        Media: any;
-        Mediagroup: any;
-        Method: any;
-        Min: any;
-        Minlength: any;
-        Multiple: any;
-        Muted: any;
-        Name: any;
-        Nonce: any;
-        Novalidate: any;
-        Open: any;
-        Optimum: any;
-        Pattern: any;
-        Placeholder: any;
-        Playsinline: any;
-        Poster: any;
-        Preload: any;
-        Readonly: any;
-        Rel: any;
-        Required: any;
-        Reversed: any;
-        Rows: any;
-        Rowspan: any;
-        Sandbox: any;
-        Scope: any;
-        Scoped: any;
-        Scrolling: any;
-        Seamless: any;
-        Selected: any;
-        Shape: any;
-        Size: any;
-        Sizes: any;
-        Span: any;
-        Src: any;
-        Srcdoc: any;
-        Srclang: any;
-        Srcset: any;
-        Start: any;
-        Step: any;
-        Summary: any;
-        Target: any;
-        Type: any;
-        Value: any;
-        Width: any;
-        Wmode: any;
-        Wrap: any;
+        Accept?: any;
+        Acceptcharset?: any;
+        Action?: any;
+        Allowfullscreen?: any;
+        Allowtransparency?: any;
+        Alt?: any;
+        As?: any;
+        Async?: any;
+        Autocomplete?: any;
+        Autofocus?: any;
+        Autoplay?: any;
+        Capture?: any;
+        Cellpadding?: any;
+        Cellspacing?: any;
+        Charset?: any;
+        Challenge?: any;
+        Checked?: any;
+        Cite?: any;
+        Cols?: any;
+        Colspan?: any;
+        Content?: any;
+        Controls?: any;
+        Coords?: any;
+        Crossorigin?: any;
+        Data?: any;
+        Datetime?: any;
+        Default?: any;
+        Defer?: any;
+        Disabled?: any;
+        Download?: any;
+        Enctype?: any;
+        Form?: any;
+        Formaction?: any;
+        FormencType?: any;
+        Formmethod?: any;
+        Formnovalidate?: any;
+        Formtarget?: any;
+        Frameborder?: any;
+        Headers?: any;
+        Height?: any;
+        High?: any;
+        Href?: any;
+        Hreflang?: any;
+        For?: any;
+        Httpequiv?: any;
+        Integrity?: any;
+        Keyparams?: any;
+        Keytype?: any;
+        Kind?: any;
+        Label?: any;
+        List?: any;
+        Loop?: any;
+        Low?: any;
+        Manifest?: any;
+        Marginheight?: any;
+        Marginwidth?: any;
+        Max?: any;
+        Maxlength?: any;
+        Media?: any;
+        Mediagroup?: any;
+        Method?: any;
+        Min?: any;
+        Minlength?: any;
+        Multiple?: any;
+        Muted?: any;
+        Name?: any;
+        Nonce?: any;
+        Novalidate?: any;
+        Open?: any;
+        Optimum?: any;
+        Pattern?: any;
+        Placeholder?: any;
+        Playsinline?: any;
+        Poster?: any;
+        Preload?: any;
+        Readonly?: any;
+        Rel?: any;
+        Required?: any;
+        Reversed?: any;
+        Rows?: any;
+        Rowspan?: any;
+        Sandbox?: any;
+        Scope?: any;
+        Scoped?: any;
+        Scrolling?: any;
+        Seamless?: any;
+        Selected?: any;
+        Shape?: any;
+        Size?: any;
+        Sizes?: any;
+        Span?: any;
+        Src?: any;
+        Srcdoc?: any;
+        Srclang?: any;
+        Srcset?: any;
+        Start?: any;
+        Step?: any;
+        Summary?: any;
+        Target?: any;
+        Type?: any;
+        Value?: any;
+        Width?: any;
+        Wmode?: any;
+        Wrap?: any;
     
         // Unknown
-        Radiogroup: any; // <command>, <menuitem>
+        Radiogroup?: any; // <command>, <menuitem>
     
         // WAI-ARIA
-        Role: any;
+        Role?: any;
     
         // RDFa Attributes
-        About: any;
-        Datatype: any;
-        Inlist: any;
-        Prefix: any;
-        Property: any;
-        Resource: any;
-        Typeof: any;
-        Vocab: any;
+        About?: any;
+        Datatype?: any;
+        Inlist?: any;
+        Prefix?: any;
+        Property?: any;
+        Resource?: any;
+        Typeof?: any;
+        Vocab?: any;
     
         // Non-standard Attributes
-        Autocapitalize: any;
-        Autocorrect: any;
-        Autosave: any;
-        Color: any;
-        Results: any;
-        Security: any;
-        Unselectable: any;
+        Autocapitalize?: any;
+        Autocorrect?: any;
+        Autosave?: any;
+        Color?: any;
+        Results?: any;
+        Security?: any;
+        Unselectable?: any;
     
         // Living Standard
         /**
          * Hints at the type of data that might be entered by the user while editing the element or its contents
          * @see https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute
          */
-        Inputmode: any;
+        Inputmode?: any;
         /**
          * Specify that a standard HTML element should behave like a defined custom built-in element
          * @see https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
          */
-        Is: any;
+        Is?: any;
     }
     // Taken from React (18.0) Type definitions 
     // Project: http://facebook.github.io/react/
@@ -785,42 +874,42 @@ interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
         | 'treeitem';
         
     interface ARIAMixins {
-        "aria-atomic": string
-        "aria-auto-complete": string
-        "aria-busy": string
-        "aria-checked": string
-        "aria-colcount": string
-        "aria-colindex": string
-        "aria-colspan": string
-        "aria-current": string
-        "aria-disabled": string
-        "aria-expanded": string
-        "aria-haspopup": string
-        "aria-hidden": string
-        "aria-keyshortcuts": string
-        "aria-label": string
-        "aria-level": string
-        "aria-live": string
-        "aria-modal": string
-        "aria-multiLine": string
-        "aria-multi-selectable": string
-        "aria-orientation": string
-        "aria-placeholder": string
-        "aria-posinset": string
-        "aria-pressed": string
-        "aria-readonly": string
-        "aria-required": string
-        "aria-roledescription": string
-        "aria-rowcount": string
-        "aria-rowindex": string
-        "aria-rowspan": string
-        "aria-selected": string
-        "aria-setsize": string
-        "aria-sort": string
-        "aria-valuemax": string
-        "aria-valuemin": string
-        "aria-valuenow": string
-        "aria-valuetext": string
+        "aria-atomic"?: string
+        "aria-auto-complete"?: string
+        "aria-busy"?: string
+        "aria-checked"?: string
+        "aria-colcount"?: string
+        "aria-colindex"?: string
+        "aria-colspan"?: string
+        "aria-current"?: string
+        "aria-disabled"?: string
+        "aria-expanded"?: string
+        "aria-haspopup"?: string
+        "aria-hidden"?: string
+        "aria-keyshortcuts"?: string
+        "aria-label"?: string
+        "aria-level"?: string
+        "aria-live"?: string
+        "aria-modal"?: string
+        "aria-multiLine"?: string
+        "aria-multi-selectable"?: string
+        "aria-orientation"?: string
+        "aria-placeholder"?: string
+        "aria-posinset"?: string
+        "aria-pressed"?: string
+        "aria-readonly"?: string
+        "aria-required"?: string
+        "aria-roledescription"?: string
+        "aria-rowcount"?: string
+        "aria-rowindex"?: string
+        "aria-rowspan"?: string
+        "aria-selected"?: string
+        "aria-setsize"?: string
+        "aria-sort"?: string
+        "aria-valuemax"?: string
+        "aria-valuemin"?: string
+        "aria-valuenow"?: string
+        "aria-valuetext"?: string
     }
     
     
@@ -1426,7 +1515,7 @@ interface BHTMLAttributeSet1 extends DependencyAttributes, HTMLAttribute{}
         method?: string | undefined;
         min?:  string | undefined;
         name?: string | undefined;
-        style?: SpecialStyleString | undefined;
+        style?: string | undefined;
         target?: string | undefined;
         type?: string | undefined;
         width?:  string | undefined;

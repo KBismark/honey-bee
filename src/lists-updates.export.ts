@@ -1,4 +1,7 @@
-function insertList(list: ListInternal, parentData: { id: number; i: number }, node?: any) {
+import { internal_ins, renderingComponent, Blocks, internal, NODETYPES, componentsTrashBin } from "./global";
+import { ListInternal, list_text_replacer } from "./lists.exports";
+
+export function insertList(list: ListInternal, parentData: { id: number; i: number }, node?: any) {
   updateListData(list);
   const lc: any = list.curData;
   let value,docF: any = undefined,ar,e,j,ee: any,pid = parentData.id,pidx = parentData.i;
@@ -32,7 +35,8 @@ function insertList(list: ListInternal, parentData: { id: number; i: number }, n
   value.parent = pid;
   return docF || value.head;
 }
-function removeList(list: ListInternal, head: any) {
+
+export function removeList(list: ListInternal, head: any) {
   let lc = list.curData,
     value = list.pos,
     r,

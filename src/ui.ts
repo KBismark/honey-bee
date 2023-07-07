@@ -1,7 +1,16 @@
+import { BeeElement, Bee } from "./bee";
+import { clone, cloneWithState } from "./bee.exports";
+import { CreatedComponents, B, Namings, _external, firstPageCreated, pagelock, pageopen, internal_ins, page_tracking, PAGES, PAGES_TYPES, internal, Blocks, STATUS, independent, renderingComponent, NODETYPES } from "./global";
+import { ComponentClass, ComponentInstance, keepEverythingIfDestroyed, keepStateIfDestroyed } from "./helper-classes";
+import { AfterInserts, startUpdates } from "./helper-methods.export";
+import { List } from "./lists";
+import "./jsx-elements";
+import { runDynamicnodes, updateDynamicnodes } from "./render.export";
+
 /**
  * A class containing all methods and properties of the HoneyBee UI
  */
-class UI {
+export class UI {
   constructor() { }
   /**
    *
@@ -11,7 +20,7 @@ class UI {
    * @param fn Provide the actual component, a function with only one argument as props to the component.
    *
    */
-  CreateComponent<args, state, InitArgs>(this: UI, name: string, fn: BeeComponentMethod<args, state>): BeeComponentClass<args, InitArgs> {
+  CreateComponent<args, state, InitArgs,ComponentMethodsAndProps = PossibleValues>(this: UI, name: string, fn: BeeComponentMethod<args, state, ComponentMethodsAndProps>): BeeComponentClass<args, InitArgs> {
     const cm = new ComponentClass(fn, 'function');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
@@ -28,7 +37,11 @@ class UI {
   * @param fn Provide the actual component, an object with all properties and methods of the component.
   *
   */
-  CreateComponentFromObject<args, state, InitArgs, OperationalMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, OperationalMethodsAndProps> = ComponentObjectObjects<args, state, OperationalMethodsAndProps>>(this: UI, name: string, obj: ComponentObjectValue<OperationalMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<OperationalMethodsAndProps, K> : ComponentObjectValue<OperationalMethodsAndProps, K> & { state: undefined }): BeeComponentClass<args, InitArgs> {
+  CreateComponentFromObject<args, state, InitArgs, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>>
+    (
+      this: UI, name: string,
+      obj: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
+    ): BeeComponentClass<args, InitArgs> {
     const cm = new ComponentClass(obj, 'object');
     CreatedComponents.set(cm.id, cm);
     const f: any = ComponentMethod.bind({ fnId: cm.id });
@@ -81,7 +94,7 @@ class UI {
       page_tracking.currentPageName = pagePath;
       PAGES[pagePath] = id;
       PAGES_TYPES[id] = ins[internal_ins].fnId;
-      firstPageCreated = true;
+      (firstPageCreated as any) = true;
       if ((B as any).isSSR) {
         (B as any).isSSR = false;
         return;
@@ -109,7 +122,7 @@ class UI {
    */
   lockPageCreation(this: UI, obj: {}) {
     if (pagelock == internal) {
-      pagelock = obj;
+      (pagelock as any) = obj;
     }
   }
   /**
@@ -119,7 +132,7 @@ class UI {
    */
   unlockPageCreation(this: UI, obj: {}) {
     if (pagelock == obj) {
-      pagelock = pageopen;
+      (pagelock as any) = pageopen;
     }
   }
   /**
@@ -407,7 +420,7 @@ type BeeComponentInstance<T, I> = {
     readonly status: 1 | 2 | 3 | 4;
   };
 };
-class BeeComponentInstanceObject<T>{
+export class BeeComponentInstanceObject<T>{
   declare ArgumentType?: T;
   [k: symbol]: {
     fnId: number; id: number; out?: {
@@ -442,8 +455,9 @@ class BeeComponentInstanceObject<T>{
 type PossibleValues = { [k: string | symbol | number]: any };
 
 type BeeComponentClass<args, InitArgs> = ((args: args) => any) & BeeComponentInstance<args, InitArgs>;
-
-type BeeComponentMethod<args, state> = (this: ComponentObject<args, state>, args: args) => void;
+// ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
+type BeeComponentMethod<args, state, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>> =
+  (this: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }, args: args) => JSX.Element;
 /**
  * These are only accessible inside the component object methods.
  */
@@ -536,7 +550,7 @@ interface ComponentObject<args, state, T = PossibleValues> {
  * Extends the component object for classes and objects passed to `UI.CreateComponent`
  */
 interface ComponentObjectObjects<args, state, T = PossibleValues> extends ComponentObject<args, state, T> {
-  view(this: this & T, args: args, state: state): JSX.Element
+  view(this: this & T, args: args, state: state): JSX.Element;
 }
 
 

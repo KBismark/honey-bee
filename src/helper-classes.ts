@@ -1,10 +1,14 @@
+import { BeeElement } from "./bee";
+import { internal, dinstinctComponents, global_template, TemplateBucket, componentsID, internal_ins, NODETYPES, STATUS } from "./global";
+import { BeeComponentInstanceObject } from "./ui";
+
 /**
  * Components can be **partially** hibernated when not needed for a time. Instead of destroying everything related to a component including 
  * states, we can keep the state of the destroyed component in memory and reuse the state in our next render of the component. This is basically 
  * the only way to have state persist between renders.
  * 
  */
-function keepStateIfDestroyed(this: any, bool: boolean) {
+export function keepStateIfDestroyed(this: any, bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
@@ -17,7 +21,7 @@ function keepStateIfDestroyed(this: any, bool: boolean) {
  * over memory and hence must be used only in cases when you are sure of reusing the component in no time.    
  * 
  */
-function keepEverythingIfDestroyed(this: any, bool: boolean) {
+export function keepEverythingIfDestroyed(this: any, bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
@@ -35,7 +39,7 @@ function isIndependent(this: any) {
 /**
  * The base of all component classes
  */
-class ComponentClass {
+export class ComponentClass {
   constructor(fn: any, type: 'object' | 'function') {
     switch (type) {
       // A component class may be created from a function
@@ -55,7 +59,7 @@ class ComponentClass {
         break;
     }
 
-    this.id = ++dinstinctComponents;
+    this.id = ++(dinstinctComponents as any);
   }
   template: any;
   dn: any;
@@ -99,7 +103,7 @@ class ComponentClass {
   getTemplate() {
     if (!this.template) {
       if (!global_template) {
-        global_template = document.createElement('template');
+        (global_template as any) = document.createElement('template');
       }
       global_template.innerHTML = this.html();
       this.template = global_template.content.firstElementChild;
@@ -113,9 +117,9 @@ class ComponentClass {
  * The base of the internal object set on all component objects.
  * It contains information on the component not accessible outside
  */
-class ComponentInstance {
+export class ComponentInstance {
   constructor({ methodId, args, initArgs }: { methodId: number; args: any; initArgs?: any }) {
-    this.id = ++componentsID;
+    this.id = ++(componentsID as any);
     const b = this.outerValue[internal];
     b.id = componentsID;
     this.fnId = methodId;

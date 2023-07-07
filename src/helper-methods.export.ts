@@ -1,3 +1,9 @@
+import { Bee } from "./bee";
+import { MountBucket, TemplateBucket, global_template, updates_initiated, updating, dynamicNodeUpdates, listUpdates, ext_state, internal, page_tracking, Blocks, PAGES_TYPES, CreatedComponents, Namings, PAGES, internal_ins, B, componentsTrashBin, STATUS } from "./global";
+import { updateList } from "./lists.exports";
+import { updateStatefulDynamicnodes } from "./render.export";
+import { BeeComponentInstanceObject } from "./ui";
+
 function runMount(comp:any) {
   comp.onMount.call(comp,comp.state);
 }
@@ -8,14 +14,14 @@ function clearTemplates(compClass:any) {
  * Execute tasks after node inserts into the DOM.
  * `AfterInsert` is called right after every render/update cycle 
  */
-function AfterInserts() {
+export function AfterInserts() {
   //Trigger onmount events
   MountBucket.forEach(runMount);
   MountBucket.clear();
   //Clear the component templates store
   TemplateBucket.forEach(clearTemplates);
   TemplateBucket.clear();
-  global_template = undefined;
+  (global_template as any) = undefined;
 }
 /**
  * Schedule a new render/update cycle
@@ -23,17 +29,17 @@ function AfterInserts() {
  * TODO: 
  * - Use `requestAnimationFrame` on supported browsers instead of a `setTimeout`
  */
-function startUpdates() {
+export function startUpdates() {
   if (!updates_initiated) {
-    updates_initiated = true;
+    (updates_initiated as any) = true;
     setTimeout(update, 1);
   }
 }
 /**
  * Cause an update
  */
-function update() {
-  updating = true;
+export function update() {
+  (updating as any) = true;
   // Check and render new page if any
   const newpage = _newpageRendered();
   if (!newpage) {
@@ -57,14 +63,14 @@ function update() {
    */
   setTimeout(cleanUp, 1);
   // cleanUp();
-  updating = updates_initiated = false;
+  (updating as any) = (updates_initiated as any) = false;
 }
 /**
  * Add reactivity to a state property
  * @param key A state property key
  * @returns {{[k:symbol|string]:any}}
  */
-function keySetter(key: any): { [k: symbol | string]: any } {
+export function keySetter(key: any): { [k: symbol | string]: any } {
   return {
     /**
      *  Set a state property value
@@ -148,7 +154,7 @@ function keySetter(key: any): { [k: symbol | string]: any } {
 /**
  * Add reactivity to state properties
  */
-const observeDependency = function observeDependency(
+export function observeDependency(
   obj: any,
   keys: any,
   upsContainer: any,
@@ -216,7 +222,7 @@ function _newpageRendered() {
       const node:HTMLElement = block[internal].outerValue[internal].node;
       const parentNode = node.parentNode;
       const nextSibling:ChildNode|null = node.nextSibling;
-      const replacer:HTMLElement = B.UI.render(newPageInstance)[internal].node;
+      const replacer:HTMLElement = (B as Bee).UI.render(newPageInstance)[internal].node;
       // Component was not re-used anywhere in new page
       if (node.parentNode === parentNode) {
         node.replaceWith(replacer);
@@ -238,7 +244,7 @@ function _newpageRendered() {
       }
       const parentNode:ParentNode|null = node.parentNode;
       const nextSibling:ChildNode|null = node.nextSibling;
-      const replacer:HTMLElement = B.UI.render(newPageInstance)[internal].node;
+      const replacer:HTMLElement = (B as Bee).UI.render(newPageInstance)[internal].node;
       // Component was not re-used anywhere in new page
       if (node.parentNode === parentNode) {
         node.replaceWith(replacer);
@@ -337,7 +343,7 @@ function runElementEvent(data: { event?: Event | null; key: string; id: number; 
   keyed_Data.$events[data.ev].apply((data.event as Event).target, [data.event, comp]);
   data.event = null;
 }
-function eventHandler(this: { event?: Event | null; key: string; id: number; ev: any }, e: Event) {
+export function eventHandler(this: { event?: Event | null; key: string; id: number; ev: any }, e: Event) {
   const data = this;
   data.event = e;
   runElementEvent(data);
@@ -348,3 +354,4 @@ function removeEvents(element: any, eventCallers: { [k: string]: Function }) {
     element.removeEventListener(i, eventCallers[i], false);
   }
 }
+

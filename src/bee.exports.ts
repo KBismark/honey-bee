@@ -1,8 +1,12 @@
-// Clone component  
-// When a component's class has its first component instance created,
-// it becomes fully set up. Hence, subsequent need to create a new component from the 
-// class needs not set the class up again. We just clone.
-function clone(_internal_: any) {
+import { B, Blocks, CreatedComponents, MountBucket, independent, internal } from "./global";
+import { eventHandler, observeDependency } from "./helper-methods.export";
+/** 
+Clone component  
+When a component's class has its first component instance created,
+it becomes fully set up. Hence, subsequent need to create a new component from the 
+class needs not set the class up again. We just clone.
+*/
+export function clone(_internal_: any) {
   // Get component's class
   const compClass = CreatedComponents.get(_internal_.fnId);
   // Set `independent` value if  component's class was defined as independent
@@ -67,11 +71,21 @@ function clone(_internal_: any) {
   return node;
 }
 
+/**
+ * The function `cloneWithState` clones a component object and preserves its state for use in future
+ * rendering phases.
+ * @param {any} comp - The `comp` parameter is the component object that needs to be cloned with its
+ * state preserved. It is an instance of a component class.
+ * @param {any} _internal_ - _internal_ is an object that contains internal information about the
+ * component. It includes properties such as fnId (function ID), Args (arguments passed to the
+ * component), id (component ID), keyed (keyed elements), and init_dyn (initialized dynamic method).
+ * @returns The function `cloneWithState` returns the `node` object.
+ */
 // Partially hibernated components have their states not destroyed even after being detached
 // and getting it's component object destroyed.
 // We clone with preserved state object. This is literrally, the only way to have state persist
 // between two rendering phases of one particular component. 
-function cloneWithState(comp: any, _internal_: any) {
+export function cloneWithState(comp: any, _internal_: any) {
   const compClass = CreatedComponents.get(_internal_.fnId);
   const node = compClass.getTemplate();
   Object.setPrototypeOf(comp, compClass.proto);
@@ -91,8 +105,15 @@ function cloneWithState(comp: any, _internal_: any) {
   return node;
 }
 
-// 
-function run(comp: any) {
+
+/**
+ * The function runs a TypeScript component by initializing its arguments, calling the onCreation and
+ * onParentEffect methods, setting the public data, and scheduling the onMount method to be called
+ * after rendering.
+ * @param {any} comp - The `comp` parameter is an object that represents a component. It contains
+ * various properties and methods related to the component's behavior and state.
+ */
+export function run(comp: any) {
   const _internal_ = comp[internal];
   const args = _internal_.Args;
   // If component is not ever created, run `onCreation()`
