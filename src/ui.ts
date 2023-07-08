@@ -140,7 +140,11 @@ export class UI {
   /**
   * Create a style sheet from your css files. Scope styles to your component using JavaScript
   */
-  declare CreateStyleSheet: <T = { [k: string]: string[] }>(this: UI, styleObject: T) => StyleObject<T>
+  declare CreateStyleSheet: (<T = {
+    [k: string]: string[];
+  }>(this: UI, styleObject: T) => StyleObject<T>) | (<T = {
+    [k: string]: string[];
+  }>(this: UI, styleObject: T, styleXtension?: PseudoStyleObject<T>) => StyleObject<T>);
 
   /**
    * Locks page creation.
@@ -629,16 +633,21 @@ interface ComponentObjectObjects<args, state, T = PossibleValues> extends Compon
 
 type StyleObject<T> = {
   [P in keyof T]: {
-    /**
-     * The class names for this selection
-     */
-    class: string,
-    /**
-    * The css style for this selection
-    */
-    style: T[P]
-  }
-}
+      /**
+       * The class names for this selection
+       */
+      class: string;
+      /**
+      * The css style for this selection
+      */
+      style: string;
+  };
+};
+type PseudoStyleObject<T> = {
+  [P in keyof T]?: {
+      [k: string]:{[k: string]: string}[];
+  };
+};
 type ObjectValue<T> = { [P in keyof T]: T[P] extends (this: any, ...args: infer U) => infer N ? (this: T, ...args: U) => N : T[P] };
 type ObjectNextedValues<T, U> = { [P in keyof T as U extends (string | symbol | number) ? U : any]: T[P] };
 type GetObjectValue<O, P extends keyof O> = O[P];
