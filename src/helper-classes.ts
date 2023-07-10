@@ -149,7 +149,7 @@ class ComponentInstance {
     },
   };
   // holds the `BeeComponentInstanceObject` of the component
-  ins: BeeComponentInstanceObject<any> = { [internal_ins]: { fnId: 0, id: 0, out: undefined }, isComponent: true };
+  ins: BeeComponentInstanceObject<any> = { [internal_ins]: { fnId: 0, id: 0, out: undefined }, isComponent: true, status: (STATUS as any).dead };
   // All components are initially not created until it first renders
   created? = false;
   // Pure components cannot be hibernated
