@@ -302,10 +302,10 @@ function clearComponents(children: any, id: any) {
       comp = { state: comp.state };
       comp[internal] = _internal_;
       Blocks.set(id, comp);
-      _internal_.status = STATUS.hibernatedPartially;
+      _internal_.status = _internal_.ins.status = STATUS.hibernatedPartially;
     } else {
       Blocks.delete(id);
-      _internal_.status = STATUS.dead;
+      _internal_.status = _internal_.ins.status = STATUS.dead;
     }
 
     const keyed = _internal_.keyed;
@@ -327,7 +327,8 @@ function triggerHibernateEvents(children: any, id: any) {
   comp.willHibernate && comp.willHibernate.call(comp, state);
   children.forEach(triggerHibernateEvents);
   onHibernated && onHibernated.call(comp, state);
-  comp[internal].status = STATUS.hibernatedFully;
+  const _internal_ = comp[internal];
+  _internal_.status = _internal_.ins.status = STATUS.hibernatedFully;
 }
 function runElementEvent(data: { event?: Event | null; key: string; id: number; ev: any }) {
   const comp = Blocks.get(data.id);
