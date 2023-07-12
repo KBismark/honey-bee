@@ -8,7 +8,9 @@ class Bee {
   // Every component maintains its own state. The state object is a property of the
   // component's object. Component objects also has predefined methods and properties
   // of the component's class.
-  ComponentObject: typeof BeeComponentObjects;
+
+  ///ComponentObject: ComponentObjectObjects;
+
   // Component instance objects inherits from this class
   // An instance object is returned whenever you create a new component instance from
   // a component class
@@ -31,11 +33,11 @@ class Bee {
 
   constructor() {
     this.UI = new UI();
-    this.ComponentObject = BeeComponentObjects;
+    //this.ComponentObject = BeeComponentObjects;
     this.ComponentInstanceObject = new BeeComponentInstanceObject;
     this.isSelectiveRendering = false;
     this.selector = null;
-    let _ext = {data:{}};
+    let _ext = { data: {} };
     if ((window as any).HoneyBee) {
       _ext = (window as any).HoneyBee.externalData;
     }
@@ -51,9 +53,9 @@ class Bee {
     const independentNode = getIndependentNode(node);
     // The pathname of the module where component was defined
     const path = independentNode.getAttribute('bee-path'),
-    // Get the actual component's name 
+      // Get the actual component's name 
       compName = independentNode.getAttribute('bee-N');
-  // Store info on selected node and component
+    // Store info on selected node and component
     B.selector = {
       node: independentNode,
       iname: independentNode.getAttribute('bee-I'),
@@ -103,7 +105,7 @@ class Bee {
     }
     if (B.isSelectiveRendering && _internal_.independent) {// Is hydrating
       // Independent component prevents further rendering
-      return independent; 
+      return independent;
     }
     // Get a clone of the component's static nodes
     const node = compClass.getTemplate();
@@ -133,7 +135,7 @@ class Bee {
     // Get all dynamic methods 
     // Calling these methods would return dynamic nodes to be inserted in our
     // view/UI to form the complete view/UI of the component
-    _internal_.init_dyn = dynMethod(node); 
+    _internal_.init_dyn = dynMethod(node);
     // Attribuites can only be update if their dependencies were set
     // Setting attribute dependencies help to only update affected parts of the view/UI
     // without any diffing algorithm
@@ -141,7 +143,7 @@ class Bee {
     const attrDeps = (_internal_.attrDeps = new Map());
     // Get the state object if exists
     const state = comp.state;
-    let key: string, fn:any;
+    let key: string, fn: any;
     if (state) {
       //  Observe state object's properties for changes
       // This observes for only the attributes that would need updates in the future (Those that had dependencies set)
@@ -166,13 +168,13 @@ class Bee {
 if (typeof (window as any).I4W != 'undefined') {
   (Bee as any).prototype._imex = (window as any).I4W;
 } else {
-    (window as any).I4W = (Bee as any).prototype._imex = {
+  (window as any).I4W = (Bee as any).prototype._imex = {
     pathname: '',
     getPath() {
       return this.pathname;
     },
     // This value indicates the global I4W objext is not original.
-      isShimmed: true
+    isShimmed: true
   };
 }
 // We need the select method to be accessible outside this library
