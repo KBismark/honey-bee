@@ -525,18 +525,18 @@ interface ComponentObject<args, state, T = PossibleValues> {
    */
   onHibernated?(this: this & T & Insiders, ...args: [state]): void;
   /**
-   * `this.public` is the public space through which components can access and communicate to other components.
+   * `this.publicData` is the public space through which components can access and communicate to other components.
    * It must return the value to be shared with others.
    * 
    */
-  public?(this: this & T & Insiders, ...args: [args, state]): PossibleValues;
+  publicData?(this: this & T & Insiders, ...args: [args, state]): PossibleValues;
 }
 
 /**
  * Extends the component object for classes and objects passed to `UI.CreateComponent`
  */
 interface ComponentObjectObjects<args, state, T = PossibleValues> extends ComponentObject<args, state, T> {
-  view(this: this, ...args: [args, state]): JSX.Element
+  view(this: this & T, args: args, state: state): JSX.Element
 }
 
 

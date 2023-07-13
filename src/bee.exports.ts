@@ -14,7 +14,7 @@ function clone(_internal_: any) {
   }
   if ((B as any).isSelectiveRendering && _internal_.independent) {// Is hydrating
     // Independent component prevents further rendering
-    return independent; 
+    return independent;
   }
   // Get a clone of the component's static nodes
   const node = compClass.getTemplate();
@@ -32,7 +32,7 @@ function clone(_internal_: any) {
   // This allows us to re-render the same component with its state
   // even after it was destroyed and detached from the DOM
   const id = _internal_.id;
- // We keep track of all component objects.
+  // We keep track of all component objects.
   // `Blocks` map all rendered components to their component's object
   Blocks.set(id, comp);
   // Run certain events like onCreation, onMount, onParentEffect, etc
@@ -46,8 +46,8 @@ function clone(_internal_: any) {
   // Get all dynamic methods 
   // Calling these methods would return dynamic nodes to be inserted in our
   // view/UI to form the complete view/UI of the component
-  _internal_.init_dyn = compClass.dynMethod(node); 
- // Attribuites can only be update if their dependencies were set
+  _internal_.init_dyn = compClass.dynMethod(node);
+  // Attribuites can only be update if their dependencies were set
   // Setting attribute dependencies help to only update affected parts of the view/UI
   // without any diffing algorithm
   // Info on attribuites that would need updates in the UI/view for any render cycle is kept here 
@@ -78,16 +78,16 @@ function cloneWithState(comp: any, _internal_: any) {
   const args = _internal_.Args;
   const state = comp.state;
   // Call this.onParentEffect()
-  comp.onParentEffect && comp.onParentEffect.call(comp, args, state); 
+  comp.onParentEffect && comp.onParentEffect.call(comp, args, state);
   // Set onMount to be called later after rendering
-  comp.onMount && MountBucket.set(_internal_.id, comp); 
-  if (comp.public) {
+  comp.onMount && MountBucket.set(_internal_.id, comp);
+  if (comp.publicData) {
     // Set public data
-    comp.public = comp.public.call(comp, args, state); 
+    comp.publicData = comp.publicData.call(comp, args, state);
   }
   const kNdN = compClass.setAttr.call(comp, _internal_.Args, node, eventHandler, _internal_.id, compClass.deps, false);
   _internal_.keyed = kNdN[0];
-  _internal_.init_dyn = compClass.dynMethod(node); 
+  _internal_.init_dyn = compClass.dynMethod(node);
   return node;
 }
 
@@ -101,11 +101,11 @@ function run(comp: any) {
   comp.initArgs = undefined;
   const state = comp.state;
   // Call this.onParentEffect()
-  comp.onParentEffect && comp.onParentEffect.call(comp, args, state); 
+  comp.onParentEffect && comp.onParentEffect.call(comp, args, state);
   // Set onMount to be called later after rendering
-  comp.onMount && MountBucket.set(_internal_.id, comp); 
-  if (comp.public) {
+  comp.onMount && MountBucket.set(_internal_.id, comp);
+  if (comp.publicData) {
     // Set public data
-    comp.public = comp.public.call(comp, args, state); 
+    comp.publicData = comp.publicData.call(comp, args, state);
   }
 }
