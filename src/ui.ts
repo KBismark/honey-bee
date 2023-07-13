@@ -258,7 +258,7 @@ class UI {
    *
    */
   getPublicData(this: UI, ins: BeeComponentInstanceObject<any>): PossibleValues {
-    return Blocks.get(ins[internal_ins].id).public || {};
+    return Blocks.get(ins[internal_ins].id).publicData || {};
   }
   /**
    * Get a keyed node. This method would return the DOM node of the element with the keyed name `key`
