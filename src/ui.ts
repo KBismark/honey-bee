@@ -25,23 +25,6 @@ class UI {
   * @param name A unique string to identify the component. The value must be unique throughout the current file
   * where `UI.CreateComponent` is called.
   *
-  * @param cls Provide the actual component, a class with all properties and methods of the component.
-  *
-  */
-  CreateComponentFromClass<args, state, InitArgs, K extends ComponentObjectObjects<args, state> = ComponentObjectObjects<args, state>>(this: UI, name: string, cls: K): BeeComponentClass<args, InitArgs> {
-    const cm = new ComponentClass(cls, 'class');
-    CreatedComponents.set(cm.id, cm);
-    const f: any = ComponentMethod.bind({ fnId: cm.id });
-    f.instance = getComponentInstance.bind({ fnId: cm.id });
-    name = cm.Name = (B as any)._imex.getPath() + name;
-    Namings[name] = f.instance;
-    return f;
-  }
-  /**
-  *
-  * @param name A unique string to identify the component. The value must be unique throughout the current file
-  * where `UI.CreateComponent` is called.
-  *
   * @param fn Provide the actual component, an object with all properties and methods of the component.
   *
   */
