@@ -3,3 +3,4 @@ node_modules
 /src/output
 /demo/dist
 /test.ts
+/test.tsx
