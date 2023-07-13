@@ -4,7 +4,7 @@
  * the only way to have state persist between renders.
  * 
  */
-function keepStateIfDestroyed(this:any,bool: boolean) {
+function keepStateIfDestroyed(this: any, bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
@@ -17,14 +17,14 @@ function keepStateIfDestroyed(this:any,bool: boolean) {
  * over memory and hence must be used only in cases when you are sure of reusing the component in no time.    
  * 
  */
-function keepEverythingIfDestroyed(this:any, bool: boolean) {
+function keepEverythingIfDestroyed(this: any, bool: boolean) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
   }
   _internal_.keepAll = !!bool;
 }
-function isIndependent(this:any) {
+function isIndependent(this: any) {
   const _internal_ = (this as any)[internal];
   if (_internal_.pure) {
     return;
@@ -36,16 +36,13 @@ function isIndependent(this:any) {
  * The base of all component classes
  */
 class ComponentClass {
-  constructor(fn: any, type: 'object' | 'class' | 'function') {
+  constructor(fn: any, type: 'object' | 'function') {
     switch (type) {
       // A component class may be created from a function
       case 'function':
         this.fn = fn;
         break;
-      // A component class may be created from a class
-      case 'class':
-        fn = new fn();
-        // A component class may be created from an object
+      // A component class may be created from an object
       case 'object':
         this.tempProto = fn;
         this.isIndependent = !!fn.isIndependent;
@@ -57,7 +54,7 @@ class ComponentClass {
         fn.view = undefined;
         break;
     }
-    
+
     this.id = ++dinstinctComponents;
   }
   template: any;
@@ -73,12 +70,12 @@ class ComponentClass {
   dynMethod: any;
   Name?: string;
 
-  setup(htmlMethod: () => string, setter: any, dn: {length:number,[k:string]:Function|number}, attrDependencies: {[k:string]:Function}, dynMethod: Function, proto: any) {
+  setup(htmlMethod: () => string, setter: any, dn: { length: number, [k: string]: Function | number }, attrDependencies: { [k: string]: Function }, dynMethod: Function, proto: any) {
     // Set the dynamic nodes of the component class
     this.dn = dn;
     // Set static nodes attribute dependencies
     this.deps = attrDependencies;
-    
+
     // Set the html method. It returns the static part of the view
     this.html = htmlMethod;
     this.setAttr = setter;
@@ -94,7 +91,7 @@ class ComponentClass {
       this.proto = this.tempProto;
       this.tempProto = undefined;
     }
-    
+
   }
   /**
    * Returns a clone of the static view of th ecomponent's class
@@ -151,11 +148,11 @@ class ComponentInstance {
   // holds the `BeeComponentInstanceObject` of the component
   ins: BeeComponentInstanceObject<any> = { [internal_ins]: { fnId: 0, id: 0, out: undefined }, isComponent: true, status: (STATUS as any).dead };
   // All components are initially not created until it first renders
-  created? = false;
+  created?= false;
   // Pure components cannot be hibernated
   // They are created when needed and destroyed when detached/destroyed/unmounted
   pure: boolean = false;
-   // All components are initially in a dead status
+  // All components are initially in a dead status
   status = STATUS.dead;
   // Holds a reference to the parent component's ID
   // It is `0` if the component has no parent component
