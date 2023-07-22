@@ -7,6 +7,7 @@ import { List } from "./lists";
 import "./jsx-elements";
 import { runDynamicnodes, updateDynamicnodes } from "./render.export";
 
+
 /**
  * A class containing all methods and properties of the HoneyBee UI
  */
@@ -527,12 +528,14 @@ export class BeeComponentInstanceObject<T>{
   declare readonly status: 1 | 2 | 3 | 4;
 }
 
+
+
 type PossibleValues = { [k: string | symbol | number]: any };
 
 type BeeComponentClass<args, InitArgs> = ((args: args) => any) & BeeComponentInstance<args, InitArgs>;
 // ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
 type BeeComponentMethod<args, state, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>> =
-  (this: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }, args: args) => JSX.Element;
+  (this: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }, args: args) => HoneyBee.Element;
 /**
  * These are only accessible inside the component object methods.
  */
@@ -625,7 +628,7 @@ interface ComponentObject<args, state, T = PossibleValues> {
  * Extends the component object for classes and objects passed to `UI.CreateComponent`
  */
 interface ComponentObjectObjects<args, state, T = PossibleValues> extends ComponentObject<args, state, T> {
-  view(this: this & T, args: args, state: state): JSX.Element;
+  view(this: this & T, args: args, state: state): HoneyBee.Element;
 }
 
 
