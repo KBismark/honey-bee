@@ -160,6 +160,8 @@ export function observeDependency(
   upsContainer: any,
   dynIndexInfo: { attr: any; [k: string]: any },
 ) {
+  // Ignore if object is not defined
+  if (!obj) { return; }
   let _internal_;
   if (!(_internal_ = obj[ext_state])) {
     _internal_ = obj[ext_state] = { [internal]: { attrContainer: undefined, nodeContainer: undefined } };

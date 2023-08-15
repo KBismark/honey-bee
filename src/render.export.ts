@@ -32,19 +32,33 @@ export function runDynamicnodes(id: number, classDyn: Array<any>, compDyn: any) 
     for (i = 0; i < l; i++) {
       method = dn[i];
       renderingComponent.dynIndex = i;
+      /*
+        DynamicNodes created with UI.CreateDynamicNode is identified with the 
+        symbol prop `_external` 
+      */
       if ((statekeys = method[_external])) {
         observeDependency(comp.state, statekeys, nodeDeps, { attr: false, id: id, dynIdex: i });
+        // Get the dynamic value for the dynamic node
         value = method.call(comp, state);
         valueType = typeof value;
       } else {
+         // Get the dynamic value for the dynamic node
         value = method.call(comp, Args, state);
         valueType = typeof value;
+        /*
+          UI.CreateDynamicNode returns the actual dynamic node identified with the 
+          symbol prop `_external` 
+        */
         if (valueType == 'function' && (statekeys = value[_external])) {
-          // Dynamic Component
           observeDependency(comp.state, statekeys, nodeDeps, { attr: false, id: id, dynIdex: i });
+          // Update the dynamic nodes object to contain the actual dynamic node 
           dn[i] = value;
+          // Get the dynamic value for the dynamic node
           value = value.call(comp, state);
           valueType = typeof value;
+        } else {
+          statekeys = Object.keys(comp.state||{});
+          observeDependency(comp.state, statekeys, nodeDeps, { attr: false, id: id, dynIdex: i });
         }
       }
       if (value == independent) {
