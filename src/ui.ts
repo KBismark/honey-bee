@@ -4,7 +4,6 @@ import { CreatedComponents, B, Namings, _external, firstPageCreated, pagelock, p
 import { ComponentClass, ComponentInstance, keepEverythingIfDestroyed, keepStateIfDestroyed } from "./helper-classes";
 import { AfterInserts, startUpdates } from "./helper-methods.export";
 import { List } from "./lists";
-import "./jsx-elements";
 import { runDynamicnodes, updateDynamicnodes } from "./render.export";
 
 
@@ -53,7 +52,7 @@ export class UI {
   CreateComponentFromObject<args, state, InitArgs, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>>
     (
       this: UI, name: string,
-      obj: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
+      obj: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: {} }
   ): BeeComponentClass<args, InitArgs> {
     // set up component class if it's the first time a component from this class is rendering.
     const cm = new ComponentClass(obj, 'object');
@@ -72,12 +71,12 @@ export class UI {
   /**
    *
    * @param fn A function that returns a value to be inserted into the DOM.
-   * @param stateDependencyKeys AAn array of keys that represent the dependencies of the state object.
+   * @param stateDependencyKeys An array of keys that represent the dependencies of the state object.
    * These keys are used to track changes in the state object and trigger updates when any of the
    * dependencies change. An empty array prevents this node from being updated after first render.
    *
    */
-  CreateDynamicNode<state = PossibleValues>(
+  private CreateDynamicNode<state = PossibleValues>(
     this: UI,
     fn: <U>(this: U extends ComponentObjectValue<PossibleValues,ComponentObjectObjects<any, state, any>>?U: PossibleValues & { state: state }, state: state) => any,
     stateDependencyKeys: Array<keyof state>,
@@ -113,7 +112,7 @@ export class UI {
   * either an instance of a BeeComponentObject or a BeeComponentClass.
   */
   CreatePage(this: UI, pagePath: string, ins: BeeComponentInstanceObject<any> | BeeComponentClass<any, any>) {
-    if (!firstPageCreated && pagelock == pageopen) {
+    if (!firstPageCreated && (pagelock == pageopen||pagelock == internal)) {
       if (typeof ins == 'function') {
         ins = ins.instance();
       }
@@ -535,7 +534,7 @@ type PossibleValues = { [k: string | symbol | number]: any };
 type BeeComponentClass<args, InitArgs> = ((args: args) => any) & BeeComponentInstance<args, InitArgs>;
 // ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }
 type BeeComponentMethod<args, state, ComponentMethodsAndProps = PossibleValues, K extends ComponentObjectObjects<args, state, ComponentMethodsAndProps> = ComponentObjectObjects<args, state, ComponentMethodsAndProps>> =
-  (this: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: undefined }, args: args) => HoneyBee.Element;
+  (this: ComponentObjectValue<ComponentMethodsAndProps, K>["state"] extends PossibleValues ? ComponentObjectValue<ComponentMethodsAndProps, K> : ComponentObjectValue<ComponentMethodsAndProps, K> & { state: {} }, args: args) => HoneyBee.Element;
 /**
  * These are only accessible inside the component object methods.
  */

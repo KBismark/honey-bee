@@ -2,7 +2,12 @@ type Booleanish = boolean | 'true' | 'false';
 
 declare namespace HoneyBee {
     type Element = {};
-    interface IntrinsicElements<T=any> {
+    interface IntrinsicElements<T = any> {
+        /**
+         * Set dependency values for dynamic nodes. This skips dynamic node execution
+         * during updates unless any of the dependencies change on the state object.
+         */
+        $dep: {value: string[]};
         view: ViewWrapperTag;
         // HTML
         a: EventHandlersEventMap<T>|HTMLTags|HTMLTagsExtension.AnchorHTMLAttributes|{[k:string]:any};
