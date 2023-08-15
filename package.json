@@ -1,6 +1,6 @@
 {
   "name": "honeybee-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A declarative and reactive library for creating both static pages, multi-page and single page applications.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
