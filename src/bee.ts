@@ -141,15 +141,16 @@ export class Bee {
     // Calling these methods would return dynamic nodes to be inserted in our
     // view/UI to form the complete view/UI of the component
     _internal_.init_dyn = dynMethod(node);
-    // Attribuites can only be update if their dependencies were set
+    // Attribuites can only be updated if their dependencies were set
     // Setting attribute dependencies help to only update affected parts of the view/UI
     // without any diffing algorithm
     // Info on attribuites that would need updates in the UI/view for any render cycle is kept here 
     const attrDeps = (_internal_.attrDeps = new Map());
     // Get the state object if exists
-    const state = comp.state;
+    let state = comp.state;
     let key: string, fn: any;
-    if (state) {
+    if (typeof state == 'object' && state) {
+      
       //  Observe state object's properties for changes
       // This observes for only the attributes that would need updates in the future (Those that had dependencies set)
       for (key in dependencies) {
@@ -157,6 +158,9 @@ export class Bee {
         // Make state object reactive
         observeDependency(state, fn.$dep, attrDeps, { node: fn.key, attr: true, id: id, index: key });
       }
+    } else {
+      // Set state to an empty object if it is not defined
+      comp.state = {};
     }
     return node;
   }
