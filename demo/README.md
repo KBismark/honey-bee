@@ -1,5 +1,11 @@
 # How to run Demo
-Navigate to the `demo` directory and on the terminal run `npm run build` to build the neccssary files. This demo tests against latest pushed to this branch of the Honeybee repo.    
+Navigate to the `demo` directory and on the terminal run `npm start` to build the neccssary files and start running a test app. This demo tests against latest pushes to this branch of the Honeybee repo.  
+
+```bash
+cd demo 
+npm start
+
+```      
 
 While testing, you can as well modify the code in the `src/modules` directory to see results. Since honeybeeJS has no implemented dev environment with a hot module reload system, you would be required to re-build `npm run build` after modifying the code to see the results in the browser.
 
